@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProj/JobMatch/app/src/main/res/layout/activity_login.xml" value="0.23783783783783785" />
         <entry key="..\:/AndroidProj/JobMatch/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/AndroidProj/JobMatch/app/src/main/res/layout/activity_registration.xml" value="0.18952702702702703" />
         <entry key="..\:/AndroidProj/JobMatch/app/src/main/res/layout/activity_welcome_page.xml" value="0.18" />
         <entry key="..\:/AndroidProj/JobMatch/app/src/main/res/layout/item.xml" value="0.20520833333333333" />
       </map>

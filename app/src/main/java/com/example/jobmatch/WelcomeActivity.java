@@ -7,9 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class WelcomePage extends AppCompatActivity {
-    private Button bLogin;
-    private Button bRegister;
+public class WelcomeActivity extends AppCompatActivity {
+    private Button bLogin,bRegister;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,14 +26,14 @@ public class WelcomePage extends AppCompatActivity {
         bLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(WelcomePage.this,MainActivity.class);
+                Intent intent = new Intent(WelcomeActivity.this,LoginActivity.class);
                 startActivity(intent);
             }
         });
         bRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(WelcomePage.this,MainActivity.class);
+                Intent intent = new Intent(WelcomeActivity.this,RegistrationActivity.class);
                 startActivity(intent);
             }
         });

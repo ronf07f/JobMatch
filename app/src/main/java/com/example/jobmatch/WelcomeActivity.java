@@ -26,15 +26,19 @@ public class WelcomeActivity extends AppCompatActivity {
         bLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(WelcomeActivity.this,LoginActivity.class);
+                Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
+                return;
             }
         });
         bRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(WelcomeActivity.this,RegistrationActivity.class);
+                Intent intent = new Intent(WelcomeActivity.this, RegistrationActivity.class);
                 startActivity(intent);
+                finish();
+                return;
             }
         });
 

@@ -87,11 +87,9 @@ public class RegistrationActivity extends AppCompatActivity {
                             Log.i("sss",radioButton.getText().toString());
                             final FirebaseFirestore DB = FirebaseFirestore.getInstance();
 
-
+                            //add user to the fireStore database
                             Map<String,Object> data = new HashMap<>();
-
                             data.put("name" , mName.getText().toString());
-
                             final DocumentReference userRef = DB.collection(radioButton.getText().toString()).document(userId);
                             userRef.set(data);
 

@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loading = findViewById(R.id.progressBar);
+        mAuth = FirebaseAuth.getInstance();
         checkUserType();
 
 

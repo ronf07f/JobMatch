@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,28 +37,24 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    private String oppositeUserType;
 
-    private  String userSex;
+    private ProgressBar loading;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        loading = findViewById(R.id.progressBar);
+        checkUserType();
 
 
 
         al = new ArrayList<>();
-        al.add("php");
-        al.add("c");
-        al.add("python");
-        al.add("java");
-        al.add("html");
-        al.add("c++");
-        al.add("css");
-        al.add("javascript");
-
+       // al.add("php");
+      //  Log.i("snap",oppositeUserType + "");
         arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.helloText, al );
 
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
@@ -69,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
                 Log.d("LIST", "removed object!");
                 al.remove(0);
-                checkUserType();
                 arrayAdapter.notifyDataSetChanged();
             }
 
@@ -88,11 +84,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                // Ask for more data here
-                al.add("XML ".concat(String.valueOf(i)));
-                arrayAdapter.notifyDataSetChanged();
+                // Ask for more data here;
+
+
                 Log.d("LIST", "notified");
-                i++;
+
             }
 
             @Override
@@ -114,11 +110,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private  String userType;
 
     public void checkUserType() {
-        Log.i("snap","chaasdasd");
+        loading.setVisibility(View.VISIBLE);
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Log.i("snap",user.getUid());
         final FirebaseFirestore DB = FirebaseFirestore.getInstance();
         final CollectionReference employeeCollectionRef = DB.collection("Employee");
         final CollectionReference employerCollectionRef = DB.collection("Employer");
@@ -126,12 +122,14 @@ public class MainActivity extends AppCompatActivity {
         doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     DocumentSnapshot snapshot = task.getResult();
-                    if(snapshot.exists()) {
+                    if (snapshot.exists()) {
                         Log.i("snap", "Employee");
-                        userSex = "Employee";
-                        return;
+                        userType = "Employee";
+                        oppositeUserType = "Employer";
+                        getOppositeTypeUsers();
+                        loading.setVisibility(View.INVISIBLE);
                     }
                 }
             }
@@ -140,17 +138,44 @@ public class MainActivity extends AppCompatActivity {
         doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     DocumentSnapshot snapshot = task.getResult();
-                    if(snapshot.exists()) {
-                        Log.i("snap", "Employer ");
-                        userSex = "Employer";
-                        return;
+                    if (snapshot.exists()) {
+                        Log.i("snap", "Employer");
+                        userType = "Employer";
+                        oppositeUserType = "Employee";
+                        getOppositeTypeUsers();
+                        loading.setVisibility(View.INVISIBLE);
                     }
                 }
             }
         });
+
     }
+
+    public void getOppositeTypeUsers(){
+        final FirebaseFirestore DB = FirebaseFirestore.getInstance();
+        final CollectionReference oppositeTypeUsersDB = DB.collection(oppositeUserType);
+        oppositeTypeUsersDB.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    QuerySnapshot snapshot = task.getResult();
+                    if(!snapshot.isEmpty()){
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Map<String,Object>data = document.getData();
+                            Log.i("snap",(String) data.get("name"));
+                            al.add((String) data.get("name"));
+                            arrayAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+
     public void logoutUser(View view) {
         mAuth.signOut();
         Intent intent = new Intent(MainActivity.this,WelcomeActivity.class);

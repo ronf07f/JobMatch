@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<String> al;
     private ArrayAdapter<String> arrayAdapter;
-    private int i;
-
     private FirebaseAuth mAuth;
 
     private String oppositeUserType;

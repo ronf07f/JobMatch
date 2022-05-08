@@ -8,17 +8,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.behavior.SwipeDismissBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,19 +25,21 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<String> al;
-    private ArrayAdapter<String> arrayAdapter;
+    private Cards cards_data[];
+    private CardsAdapter arrayAdapter;
     private FirebaseAuth mAuth;
 
     private String oppositeUserType;
 
     private ProgressBar loading;
 
-
+    ListView listView;
+    List<Cards> rowItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +51,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        al = new ArrayList<>();
+        rowItems = new ArrayList<Cards>();
        // al.add("php");
       //  Log.i("snap",oppositeUserType + "");
-        arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.helloText, al );
+        arrayAdapter = new CardsAdapter(this, R.layout.item, rowItems );
 
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
+
 
         flingContainer.setAdapter(arrayAdapter);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
                 Log.d("LIST", "removed object!");
-                al.remove(0);
+                rowItems.remove(0);
                 arrayAdapter.notifyDataSetChanged();
             }
 
@@ -163,8 +164,9 @@ public class MainActivity extends AppCompatActivity {
                     if(!snapshot.isEmpty()){
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Map<String,Object>data = document.getData();
-                            Log.i("snap",(String) data.get("name"));
-                            al.add((String) data.get("name"));
+                            Log.i("snap",(String) document.getId());
+                            Cards item = new Cards((String) document.getId(),(String) data.get("name"));
+                            rowItems.add(item);
                             arrayAdapter.notifyDataSetChanged();
                         }
                     }

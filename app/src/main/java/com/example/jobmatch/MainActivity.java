@@ -19,18 +19,18 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
+
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.protobuf.StringValue;
+
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 Map<String,Object> data = new HashMap<>();
                 data.put("swiped","swiped");
                 DB.collection(userType).document(currentId).collection("watched").document(userId).set(data);
+                DB.collection(oppositeUserType).document(userId).collection("nope").document(currentId).set(data);
                // DB.collection(oppositeUserType).document(userId).set(swiped);
                 Toast.makeText(MainActivity.this, "Left!",Toast.LENGTH_SHORT).show();
             }
@@ -95,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
                 Map<String,Object> data = new HashMap<>();
                 data.put("swiped","swiped");
                 DB.collection(userType).document(currentId).collection("watched").document(userId).set(data);
+                DB.collection(oppositeUserType).document(userId).collection("yep").document(currentId).set(data);
+                isMatched(userId);
+
                 Toast.makeText(MainActivity.this, "Right!",Toast.LENGTH_SHORT).show();
             }
 
@@ -126,12 +130,32 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void isMatched(String userId) {
+        DocumentReference currentUserYeps = DB.collection(userType).document(currentId).collection("yep").document(userId);
+        currentUserYeps.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot snapshot = task.getResult();
+                    if(snapshot.exists()){
+                        Log.i("snap",(String) userId);
+                        Map<String,Object> data = new HashMap<>();
+                        data.put("match","match");
+                        DB.collection(userType).document(currentId).collection("match").document(userId).set(data);
+                        DB.collection(oppositeUserType).document(userId).collection("match").document(currentId).set(data);
+                        Toast.makeText(MainActivity.this, "Match",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
     private  String userType;
 
     public void checkUserType() {
         loading.setVisibility(View.VISIBLE);
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final FirebaseFirestore DB = FirebaseFirestore.getInstance();
+       // final FirebaseFirestore DB = FirebaseFirestore.getInstance();
         final CollectionReference employeeCollectionRef = DB.collection("Employee");
         final CollectionReference employerCollectionRef = DB.collection("Employer");
         currentId = user.getUid();

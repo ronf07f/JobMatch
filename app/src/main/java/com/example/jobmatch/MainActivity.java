@@ -19,11 +19,14 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.protobuf.StringValue;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,8 +82,9 @@ public class MainActivity extends AppCompatActivity {
                 Cards card = (Cards) dataObject;
                 String userId = card.getUserId();
                 Map<String,Object> data = new HashMap<>();
-                data.put( currentId,true);
-                DB.collection(oppositeUserType).document(userId).collection("connections").document("nope").set(data);
+                data.put("swiped","swiped");
+                DB.collection(userType).document(currentId).collection("watched").document(userId).set(data);
+               // DB.collection(oppositeUserType).document(userId).set(swiped);
                 Toast.makeText(MainActivity.this, "Left!",Toast.LENGTH_SHORT).show();
             }
 
@@ -89,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
                 Cards card = (Cards) dataObject;
                 String userId = card.getUserId();
                 Map<String,Object> data = new HashMap<>();
-                data.put( currentId,true);
-                DB.collection(oppositeUserType).document(userId).collection("connections").document("yep").set(data);
+                data.put("swiped","swiped");
+                DB.collection(userType).document(currentId).collection("watched").document(userId).set(data);
                 Toast.makeText(MainActivity.this, "Right!",Toast.LENGTH_SHORT).show();
             }
 
@@ -165,8 +169,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-    public void getOppositeTypeUsers(){
+    //show cards of opposite type that the user did not watch before
+   public void getOppositeTypeUsers(){
         final FirebaseFirestore DB = FirebaseFirestore.getInstance();
         final CollectionReference oppositeTypeUsersDB = DB.collection(oppositeUserType);
         oppositeTypeUsersDB.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -177,36 +181,34 @@ public class MainActivity extends AppCompatActivity {
                     if(!snapshot.isEmpty()){
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Map<String,Object>data = document.getData();
-                            final DocumentReference nopeRef= oppositeTypeUsersDB.document(document.getId()).collection("connections").document("nope");
-                            final DocumentReference yepRef= oppositeTypeUsersDB.document(document.getId()).collection("connections").document("yep");
-                            nopeRef.get().addOnSuccessListener(documentSnapshot -> {
-                                if (documentSnapshot.exists()){
-                                    Map<String,Object>nope = documentSnapshot.getData();
-                                    Log.i("snap","current id : "+(String) currentId);
-                                    if(!(boolean) nope.get(currentId)){
-                                        yepRef.get().addOnSuccessListener(documentSnapshot -> {
-                                            if (documentSnapshot.exists()){
-                                                Map<String,Object>yep = documentSnapshot.getData();
-                                                if(!(boolean) yep.get(currentId)){
-                                                    Log.i("snap", (String) document.getId());
-                                                    Cards item = new Cards((String) document.getId(), (String) data.get("name"));
-                                                    rowItems.add(item);
-                                                    arrayAdapter.notifyDataSetChanged();
-                                                }
-                                            }
-                                        });
+                            //check if user saw this card before
+                            DB.collection(userType).document((String)currentId).collection("watched").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        List<String> watched= new ArrayList<>();
+                                        for(QueryDocumentSnapshot doc : task.getResult()){
+                                            watched.add(doc.getId());
+                                        }
+                                        Log.i("snap",watched.toString());
+                                        if(!watched.contains(document.getId())){
+                                            showUserOnCard((String)document.getId(),(String) data.get("name"));
+                                        }
                                     }
                                 }
                             });
-
-
-
                         }
                     }
                 }
             }
         });
+    }
 
+
+    public void showUserOnCard(String id,String name){
+        Cards item = new Cards(id,name);
+        rowItems.add(item);
+        arrayAdapter.notifyDataSetChanged();
     }
 
 

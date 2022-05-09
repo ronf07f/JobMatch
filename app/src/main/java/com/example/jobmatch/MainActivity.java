@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -25,28 +24,33 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
 
     private Cards cards_data[];
     private CardsAdapter arrayAdapter;
     private FirebaseAuth mAuth;
-
+    private String currentId;
     private String oppositeUserType;
 
     private ProgressBar loading;
 
+    private  FirebaseFirestore DB ;
     ListView listView;
     List<Cards> rowItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DB = FirebaseFirestore.getInstance();
         setContentView(R.layout.activity_main);
         loading = findViewById(R.id.progressBar);
         mAuth = FirebaseAuth.getInstance();
+
         checkUserType();
 
 
@@ -71,14 +75,22 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onLeftCardExit(Object dataObject) {
-                //Do something on the left!
-                //You also have access to the original object.
-                //If you want to use it just cast it (String) dataObject
+
+                Cards card = (Cards) dataObject;
+                String userId = card.getUserId();
+                Map<String,Object> data = new HashMap<>();
+                data.put( currentId,true);
+                DB.collection(oppositeUserType).document(userId).collection("connections").document("nope").set(data);
                 Toast.makeText(MainActivity.this, "Left!",Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
+                Cards card = (Cards) dataObject;
+                String userId = card.getUserId();
+                Map<String,Object> data = new HashMap<>();
+                data.put( currentId,true);
+                DB.collection(oppositeUserType).document(userId).collection("connections").document("yep").set(data);
                 Toast.makeText(MainActivity.this, "Right!",Toast.LENGTH_SHORT).show();
             }
 
@@ -118,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         final FirebaseFirestore DB = FirebaseFirestore.getInstance();
         final CollectionReference employeeCollectionRef = DB.collection("Employee");
         final CollectionReference employerCollectionRef = DB.collection("Employer");
+        currentId = user.getUid();
         DocumentReference doc = employeeCollectionRef.document(user.getUid());
         doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -164,10 +177,30 @@ public class MainActivity extends AppCompatActivity {
                     if(!snapshot.isEmpty()){
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Map<String,Object>data = document.getData();
-                            Log.i("snap",(String) document.getId());
-                            Cards item = new Cards((String) document.getId(),(String) data.get("name"));
-                            rowItems.add(item);
-                            arrayAdapter.notifyDataSetChanged();
+                            final DocumentReference nopeRef= oppositeTypeUsersDB.document(document.getId()).collection("connections").document("nope");
+                            final DocumentReference yepRef= oppositeTypeUsersDB.document(document.getId()).collection("connections").document("yep");
+                            nopeRef.get().addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()){
+                                    Map<String,Object>nope = documentSnapshot.getData();
+                                    Log.i("snap","current id : "+(String) currentId);
+                                    if(!(boolean) nope.get(currentId)){
+                                        yepRef.get().addOnSuccessListener(documentSnapshot -> {
+                                            if (documentSnapshot.exists()){
+                                                Map<String,Object>yep = documentSnapshot.getData();
+                                                if(!(boolean) yep.get(currentId)){
+                                                    Log.i("snap", (String) document.getId());
+                                                    Cards item = new Cards((String) document.getId(), (String) data.get("name"));
+                                                    rowItems.add(item);
+                                                    arrayAdapter.notifyDataSetChanged();
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+
+
+
                         }
                     }
                 }

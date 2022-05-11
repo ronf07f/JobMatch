@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "954676489781",
+    "firebase_url": "https://jobmatch-d96b1-default-rtdb.firebaseio.com",
     "project_id": "jobmatch-d96b1",
     "storage_bucket": "jobmatch-d96b1.appspot.com"
   },

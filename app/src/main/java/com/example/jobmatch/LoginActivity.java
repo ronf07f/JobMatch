@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, "failed to login", Toast.LENGTH_SHORT).show();
                         }
                     }
+                }).addOnFailureListener(e -> {
+                   Log.i("snap",e.toString());
                 });
             }
         });

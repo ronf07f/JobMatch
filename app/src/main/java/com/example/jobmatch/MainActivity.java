@@ -255,8 +255,8 @@ public class MainActivity extends AppCompatActivity {
         return;
     }
     public void openSettings() {
-        mAuth.signOut();
         Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+        intent.putExtra("userType",userType);
         startActivity(intent);
         return;
 

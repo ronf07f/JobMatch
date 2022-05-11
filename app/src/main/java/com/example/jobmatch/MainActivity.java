@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     List<Cards> rowItems;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,19 +56,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         loading = findViewById(R.id.progressBar);
         mAuth = FirebaseAuth.getInstance();
-
         checkUserType();
-
-
-
         rowItems = new ArrayList<Cards>();
        // al.add("php");
       //  Log.i("snap",oppositeUserType + "");
         arrayAdapter = new CardsAdapter(this, R.layout.item, rowItems );
-
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
-
-
         flingContainer.setAdapter(arrayAdapter);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
@@ -128,6 +124,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.my_menu,menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(@NonNull MenuItem item){
+        int id = item.getItemId();
+        if(id==R.id.menu_logout){
+            logoutUser();
+        }else if (id==R.id.menu_settings){
+            openSettings();
+        }
+        return true;
     }
 
     private void isMatched(String userId) {
@@ -236,11 +247,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void logoutUser(View view) {
+    public void logoutUser() {
         mAuth.signOut();
         Intent intent = new Intent(MainActivity.this,WelcomeActivity.class);
         startActivity(intent);
         finish();
         return;
+    }
+    public void openSettings() {
+        mAuth.signOut();
+        Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+        startActivity(intent);
+        return;
+
     }
 }

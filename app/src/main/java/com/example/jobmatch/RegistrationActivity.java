@@ -18,9 +18,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -37,6 +34,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private  FirebaseAuth.AuthStateListener firebaseAuthStateListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +87,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
                             //add user to the fireStore database
                             Map<String,Object> data = new HashMap<>();
-                            data.put("name" , mName.getText().toString());
-                            final DocumentReference userRef = DB.collection(radioButton.getText().toString()).document(userId);
+                            data.put(GlobalVerbs.USER_NAME , mName.getText().toString());
+                            data.put(GlobalVerbs.USER_TYPE , radioButton.getText().toString());
+                            final DocumentReference userRef = DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId);
                             userRef.set(data);
+
 
                         }
                     }

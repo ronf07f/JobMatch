@@ -7,14 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.app.Instrumentation;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -37,7 +32,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,14 +67,13 @@ public class SettingsActivity extends AppCompatActivity {
         confirmButton = findViewById(R.id.confirm);
         profileImage = findViewById(R.id.profilePic);
 
-        userType = getIntent().getExtras().getString("userType");
-        Log.i("banana",userType);
+
 
         userId = mAuth.getCurrentUser().getUid();
         Log.i("banana",""+userId);
 
 
-        userDB=DB.collection(userType).document(userId);
+        userDB=DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId);
 
 
     }
@@ -176,7 +169,7 @@ public class SettingsActivity extends AppCompatActivity {
                                         public void onSuccess(Uri uri) {
                                             String imageUrl = uri.toString();
                                             Map<String,Object> userInfo = new HashMap<>();
-                                            userInfo.put("profileImageUrl", imageUrl.toString());
+                                            userInfo.put(GlobalVerbs.PROFILE_IMAGE_URL, imageUrl.toString());
                                             userDB.update(userInfo);
 
                                             return;
@@ -207,7 +200,7 @@ public class SettingsActivity extends AppCompatActivity {
         Map<String,Object> userInfo = new HashMap<>();
         userInfo.put("name",name);
         userInfo.put("phone",phone);
-        userDB.set(userInfo);
+        userDB.update(userInfo);
     }
     /*
 

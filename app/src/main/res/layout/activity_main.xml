@@ -7,8 +7,6 @@
     tools:context=".MainActivity">
 
 
-
-
     <com.lorentzos.flingswipe.SwipeFlingAdapterView
         android:id="@+id/frame"
         android:layout_width="match_parent"
@@ -18,18 +16,19 @@
         tools:context=".MyActivity"
         tools:layout_editor_absoluteX="-33dp"
         tools:layout_editor_absoluteY="16dp" />
-
     <ProgressBar
         android:id="@+id/progressBar"
-        android:visibility="invisible"
         style="?android:attr/progressBarStyle"
         android:layout_width="171dp"
         android:layout_height="137dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

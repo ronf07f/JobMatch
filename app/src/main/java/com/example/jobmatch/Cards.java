@@ -6,8 +6,10 @@ public class Cards {
     private int age;
     private String position;
     private String job_OR_perv_jobs;
+    private String ProfileImageUrl;
 
-    public Cards(String userId, String name) {
+    public Cards(String userId, String name,String profileImageUrl) {
+        this.ProfileImageUrl = profileImageUrl;
         this.userId = userId;
         this.name = name;
     }
@@ -60,5 +62,11 @@ public class Cards {
         this.job_OR_perv_jobs = job_OR_perv_jobs;
     }
 
+    public String getProfileImageUrl() {
+        return ProfileImageUrl;
+    }
 
+    public void setProfileImageUrl(String profileImageUrl) {
+        ProfileImageUrl = profileImageUrl;
+    }
 }

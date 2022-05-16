@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String currentId;
     private String oppositeUserType;
+    private  String userType;
 
     private ProgressBar loading;
 
@@ -79,9 +80,8 @@ public class MainActivity extends AppCompatActivity {
                 String userId = card.getUserId();
                 Map<String,Object> data = new HashMap<>();
                 data.put("swiped","swiped");
-                DB.collection(userType).document(currentId).collection("watched").document(userId).set(data);
-                DB.collection(oppositeUserType).document(userId).collection("nope").document(currentId).set(data);
-               // DB.collection(oppositeUserType).document(userId).set(swiped);
+                DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.WATCHED).document(userId).set(data);
+                DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId).collection(GlobalVerbs.SWIPED_LEFT).document(currentId).set(data);
                 Toast.makeText(MainActivity.this, "Left!",Toast.LENGTH_SHORT).show();
             }
 
@@ -91,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
                 String userId = card.getUserId();
                 Map<String,Object> data = new HashMap<>();
                 data.put("swiped","swiped");
-                DB.collection(userType).document(currentId).collection("watched").document(userId).set(data);
-                DB.collection(oppositeUserType).document(userId).collection("yep").document(currentId).set(data);
+                DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.WATCHED).document(userId).set(data);
+                DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId).collection(GlobalVerbs.SWIPED_RIGHT).document(currentId).set(data);
                 isMatched(userId);
 
                 Toast.makeText(MainActivity.this, "Right!",Toast.LENGTH_SHORT).show();
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                         Map<String,Object> data = new HashMap<>();
                         data.put("match","match");
                         DB.collection(userType).document(currentId).collection("match").document(userId).set(data);
-                        DB.collection(oppositeUserType).document(userId).collection("match").document(currentId).set(data);
+                        DB.collection(oppositeUserType).document(userId).collection(GlobalVerbs.MATCH).document(currentId).set(data);
                         Toast.makeText(MainActivity.this, "Match",Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -161,9 +161,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private  String userType;
+
 
     public void checkUserType() {
+        loading.setVisibility(View.VISIBLE);
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        currentId = user.getUid();
+         DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+             @Override
+             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                 if(task.isSuccessful()){
+                     userType = task.getResult().getString(GlobalVerbs.USER_TYPE);
+                     switch (userType){
+                         case GlobalVerbs.EMPLOYEE:
+                             oppositeUserType = GlobalVerbs.EMPLOYER;
+                             break;
+                         case GlobalVerbs.EMPLOYER:
+                             oppositeUserType = GlobalVerbs.EMPLOYEE;
+                             break;
+                     }
+                     findOppositeCards();
+                     loading.setVisibility(View.INVISIBLE);
+                 }
+             }
+         });
+    }
+    /*
+    public void checkUserTypeold() {
         loading.setVisibility(View.VISIBLE);
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
        // final FirebaseFirestore DB = FirebaseFirestore.getInstance();
@@ -203,8 +227,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
+    }*/
     //show cards of opposite type that the user did not watch before
+    public void findOppositeCards(){
+        DB.collection(GlobalVerbs.USERS_COLLECTION).whereEqualTo(GlobalVerbs.USER_TYPE,oppositeUserType).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    QuerySnapshot snapshot = task.getResult();
+                    if(!snapshot.isEmpty()){
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                          //  Map<String,Object>data = document.getData();
+                            //check if user saw this card before
+                            DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.WATCHED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        List<String> watched = new ArrayList<>();
+                                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                                            watched.add(doc.getId());
+                                        }
+                                        Log.i("snap", watched.toString());
+                                        if (!watched.contains(document.getId())) {
+                                            showUserOnCard((String)document.getId(),document.getString(GlobalVerbs.USER_NAME),document.getString(GlobalVerbs.PROFILE_IMAGE_URL));
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
+    }
+    /*
    public void getOppositeTypeUsers(){
         final FirebaseFirestore DB = FirebaseFirestore.getInstance();
         final CollectionReference oppositeTypeUsersDB = DB.collection(oppositeUserType);
@@ -239,9 +295,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+     */
 
-    public void showUserOnCard(String id,String name){
-        Cards item = new Cards(id,name);
+
+    public void showUserOnCard(String id,String name,String profileImageUrl){
+        Cards item = new Cards(id,name,profileImageUrl);
         rowItems.add(item);
         arrayAdapter.notifyDataSetChanged();
     }

@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void isMatched(String userId) {
-        DocumentReference currentUserYeps = DB.collection(userType).document(currentId).collection("yep").document(userId);
+        DocumentReference currentUserYeps = DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.SWIPED_RIGHT).document(userId);
         currentUserYeps.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -152,8 +152,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("snap",(String) userId);
                         Map<String,Object> data = new HashMap<>();
                         data.put("match","match");
-                        DB.collection(userType).document(currentId).collection("match").document(userId).set(data);
-                        DB.collection(oppositeUserType).document(userId).collection(GlobalVerbs.MATCH).document(currentId).set(data);
+                        DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.MATCH).document(userId).set(data);
+                        DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId).collection(GlobalVerbs.MATCH).document(currentId).set(data);
                         Toast.makeText(MainActivity.this, "Match",Toast.LENGTH_SHORT).show();
                     }
                 }

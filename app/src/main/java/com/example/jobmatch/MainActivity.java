@@ -319,4 +319,10 @@ public class MainActivity extends AppCompatActivity {
         return;
 
     }
+    public void openMatches() {
+        Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+        startActivity(intent);
+        return;
+
+    }
 }

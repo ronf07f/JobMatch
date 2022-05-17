@@ -133,10 +133,16 @@ public class MainActivity extends AppCompatActivity {
     }
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
         int id = item.getItemId();
-        if(id==R.id.menu_logout){
-            logoutUser();
-        }else if (id==R.id.menu_settings){
-            openSettings();
+        switch (id){
+            case R.id.menu_logout:
+                logoutUser();
+                break;
+            case R.id.menu_settings:
+                openSettings();
+                break;
+            case R.id.menu_matches:
+                openMatches();
+                break;
         }
         return true;
     }
@@ -320,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void openMatches() {
-        Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+        Intent intent = new Intent(MainActivity.this,MatchesActivity.class);
         startActivity(intent);
         return;
 

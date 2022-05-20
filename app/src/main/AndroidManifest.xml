@@ -13,9 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JobMatch">
         <activity
-            android:name=".MatchesActivity"
-            android:exported="false" />
-        <activity
             android:name=".SettingsActivity"
             android:exported="false" />
         <activity

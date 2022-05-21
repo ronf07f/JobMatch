@@ -3,6 +3,8 @@ package com.example.jobmatch;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,10 +22,14 @@ public  class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MyViewH
 
     public class MyViewHolder extends  RecyclerView.ViewHolder{
         private TextView matchID;
+        private TextView matchName;
+        private ImageView matchImage;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             matchID=itemView.findViewById(R.id.matchID);
+            matchName = itemView.findViewById(R.id.matchName);
+            matchImage = itemView.findViewById(R.id.matchProfilePic);
         }
 
     }
@@ -37,8 +43,10 @@ public  class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MyViewH
 
     @Override
     public void onBindViewHolder(@NonNull MatchesAdapter.MyViewHolder holder, int position) {
-        String name = matchesList.get(position).getUserid();
-        holder.matchID.setText(name);
+        String name = matchesList.get(position).getMatchName();
+        holder.matchName.setText(name);
+        String id = matchesList.get(position).getMatchId();
+        holder.matchID.setText(id);
     }
 
     @Override

@@ -80,7 +80,7 @@ public class MatchesActivity extends AppCompatActivity {
 
 
     private void setAdapter() {
-       MatchesAdapter adapter = new MatchesAdapter(matchesList);
+       MatchesAdapter adapter = new MatchesAdapter(matchesList,getApplicationContext());
        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
        recyclerView.setLayoutManager(layoutManager);
        recyclerView.setItemAnimator(new DefaultItemAnimator());

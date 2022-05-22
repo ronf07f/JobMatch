@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
+
 
     <application
         android:allowBackup="true"
@@ -13,17 +16,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JobMatch">
         <activity
+            android:name=".GetMoreInfoActivity"
+            android:exported="false"
+            android:label="Registration"
+            />
+
+        <activity
             android:name=".MatchesActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="Matches"
+            />
         <activity
             android:name=".SettingsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="Edit Profile"
+            />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
             android:name=".RegistrationActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="Registration"/>
         <activity
             android:name=".WelcomeActivity"
             android:exported="true">

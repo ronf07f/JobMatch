@@ -1,23 +1,34 @@
 package com.example.jobmatch;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -117,9 +128,10 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Intent intent = new Intent(Intent.ACTION_PICK);
                // intent.setType("image/*");
-                mGetContent.launch("image/*");
-
-
+              //  mGetContent.launch("image/*")
+                //ImagePicker
+               // ImagePicker.Companion.with(SettingsActivity.this).start()
+                chooseProfilePicture();
             }
         });
 
@@ -133,6 +145,110 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    private void chooseProfilePicture() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.chose_profile_pic_dialog,null);
+        builder.setCancelable(false);
+        builder.setView(dialogView);
+
+        AlertDialog alertDialogProfilePic =builder.create();
+        alertDialogProfilePic.show();
+
+        ImageView Camera = dialogView.findViewById(R.id.choseCamera);
+        ImageView Gallery = dialogView.findViewById(R.id.choseGallery);
+
+        Camera.setOnClickListener(v -> {
+            //open camera
+            openCamera();
+            alertDialogProfilePic.cancel();
+
+        });
+
+        Gallery.setOnClickListener(v -> {
+            mGetContent.launch("image/*");
+            alertDialogProfilePic.cancel();
+        });
+
+
+
+    }
+    Uri cam_uri;
+    private void openCamera() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera");
+        cam_uri = SettingsActivity.this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cam_uri);
+
+        //startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE); // OLD WAY
+        startCamera.launch(cameraIntent);                // VERY NEW WAY
+
+
+    }
+
+
+
+    ActivityResultLauncher<Intent> startCamera = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        // There are no request codes
+                        final Uri imageUri = cam_uri;
+                        resultUri = imageUri;
+                        profileImage.setImageURI(resultUri);
+                        if (resultUri != null) {
+                            StorageReference filepath = FirebaseStorage.getInstance().getReference().child("profileImages").child(userId);
+                            Bitmap bitmap = null;
+
+                            try {
+                                bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), resultUri);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG,20,baos);
+                            byte[] pic =  baos.toByteArray();
+                            UploadTask uploadTask = filepath.putBytes(pic);
+                            uploadTask.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.i("banana",e.toString());
+                                }
+                            });
+                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    if(taskSnapshot.getMetadata() != null){
+                                        if(taskSnapshot.getMetadata().getReference()!=null){
+                                            Task<Uri>  result = taskSnapshot.getStorage().getDownloadUrl();
+                                            result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    String imageUrl = uri.toString();
+                                                    Map<String,Object> userInfo = new HashMap<>();
+                                                    userInfo.put(GlobalVerbs.PROFILE_IMAGE_URL, imageUrl.toString());
+                                                    userDB.update(userInfo);
+
+                                                    return;
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            });
+
+                        } else {
+                            finish();
+                        }
+
+                    }
+                }
+            });
+
     ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
         @Override
         public void onActivityResult(Uri result) {
@@ -143,6 +259,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (resultUri != null) {
                     StorageReference filepath = FirebaseStorage.getInstance().getReference().child("profileImages").child(userId);
                     Bitmap bitmap = null;
+
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), resultUri);
                     } catch (IOException e) {
@@ -177,20 +294,13 @@ public class SettingsActivity extends AppCompatActivity {
                                     });
                                 }
                             }
-                            //String downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
-
-
                         }
                     });
 
                 } else {
                     finish();
                 }
-
-
-
             }
-
     });
 
     private void saveUserInfo() {

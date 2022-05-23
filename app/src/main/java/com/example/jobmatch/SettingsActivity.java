@@ -166,7 +166,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         Gallery.setOnClickListener(v -> {
-            mGetContent.launch("image/*");
+            startGallery.launch("image/*");
             alertDialogProfilePic.cancel();
         });
 
@@ -249,7 +249,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+    ActivityResultLauncher<String> startGallery = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
         @Override
         public void onActivityResult(Uri result) {
 
@@ -311,6 +311,8 @@ public class SettingsActivity extends AppCompatActivity {
         userInfo.put("name",name);
         userInfo.put("phone",phone);
         userDB.update(userInfo);
+        finish();
+        return;
     }
     /*
 

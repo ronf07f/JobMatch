@@ -2,11 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.jobmatch">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.camera"
-        android:required="true" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -15,29 +17,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JobMatch">
+
         <activity
             android:name=".GetMoreInfoActivity"
             android:exported="false"
-            android:label="Registration"
-            />
-
+            android:label="Registration" />
         <activity
             android:name=".MatchesActivity"
             android:exported="false"
-            android:label="Matches"
-            />
+            android:label="Matches" />
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
-            android:label="Edit Profile"
-            />
+            android:label="Edit Profile" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
             android:name=".RegistrationActivity"
             android:exported="false"
-            android:label="Registration"/>
+            android:label="Registration" />
         <activity
             android:name=".WelcomeActivity"
             android:exported="true">

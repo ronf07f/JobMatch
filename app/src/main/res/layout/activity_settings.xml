@@ -22,8 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:hint="Name"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
         />
+
 
     <EditText
         android:id="@+id/phone"
@@ -31,8 +32,11 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:hint="Phone"
-        android:minHeight="48dp" />
-    />
+        android:minHeight="48dp"
+        android:ems="10"
+        android:inputType="phone"
+        />
+
 
     <Button
         android:id="@+id/confirm"

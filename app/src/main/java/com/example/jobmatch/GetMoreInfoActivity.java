@@ -108,7 +108,11 @@ public class GetMoreInfoActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveUserInfo();
+
+                if(nameField!=null&&phoneField!=null)
+                    saveUserInfo();
+
+
             }
         });
 

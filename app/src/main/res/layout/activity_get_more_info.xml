@@ -13,7 +13,7 @@
         android:layout_height="200dp"
         android:src="@mipmap/ic_launcher"
         android:layout_marginBottom="20dp"/>
-    />
+
 
     <EditText
         android:id="@+id/name"
@@ -22,7 +22,7 @@
         android:layout_marginBottom="20dp"
         android:hint="Name"
         android:minHeight="48dp" />
-    />
+
 
     <EditText
         android:id="@+id/phone"
@@ -30,15 +30,16 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:hint="Phone"
-        android:minHeight="48dp" />
-    />
+        android:minHeight="48dp"
+        android:ems="10"
+        android:inputType="phone" />
+
 
     <Button
         android:id="@+id/confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Confirm" />
-
 
 
 

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.jobmatch">
+    package="com.example.jobmatch" >
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.camera"
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
-
 
     <application
         android:allowBackup="true"
@@ -14,33 +16,35 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.JobMatch">
+        android:theme="@style/Theme.JobMatch" >
+        <service
+            android:name=".MatchCheckService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
         <activity
             android:name=".GetMoreInfoActivity"
             android:exported="false"
-            android:label="Registration"
-            />
-
+            android:label="Registration" />
         <activity
             android:name=".MatchesActivity"
             android:exported="false"
-            android:label="Matches"
-            />
+            android:label="Matches" />
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
-            android:label="Edit Profile"
-            />
+            android:label="Edit Profile" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
             android:name=".RegistrationActivity"
             android:exported="false"
-            android:label="Registration"/>
+            android:label="Registration" />
         <activity
             android:name=".WelcomeActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

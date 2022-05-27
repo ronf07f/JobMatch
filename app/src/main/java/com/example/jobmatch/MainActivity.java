@@ -3,7 +3,9 @@ package com.example.jobmatch;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -53,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = new Intent(MainActivity.this,MatchCheckService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        }
+        Context context = getApplicationContext();
         DB = FirebaseFirestore.getInstance();
         setContentView(R.layout.activity_main);
         loading = findViewById(R.id.progressBar);
@@ -160,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
                         data.put("match","match");
                         DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.MATCH).document(userId).set(data);
                         DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId).collection(GlobalVerbs.MATCH).document(currentId).set(data);
+
+
                         Toast.makeText(MainActivity.this, "Match",Toast.LENGTH_SHORT).show();
                     }
                 }

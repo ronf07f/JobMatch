@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private String currentId;
     private String oppositeUserType;
     private  String userType;
-
+    private Users thisUser;
     private ProgressBar loading;
 
     private  FirebaseFirestore DB ;
@@ -55,10 +56,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*
         Intent intent = new Intent(MainActivity.this,MatchCheckService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent);
-        }
+        }*/
         Context context = getApplicationContext();
         DB = FirebaseFirestore.getInstance();
         setContentView(R.layout.activity_main);
@@ -176,85 +178,54 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-
     public void checkUserType() {
         loading.setVisibility(View.VISIBLE);
+        Log.i("dog","chackUserType");
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         currentId = user.getUid();
-         DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-             @Override
-             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                 if(task.isSuccessful()){
-                     userType = task.getResult().getString(GlobalVerbs.USER_TYPE);
-                     switch (userType){
-                         case GlobalVerbs.EMPLOYEE:
-                             oppositeUserType = GlobalVerbs.EMPLOYER;
-                             break;
-                         case GlobalVerbs.EMPLOYER:
-                             oppositeUserType = GlobalVerbs.EMPLOYEE;
-                             break;
-                     }
-                     findOppositeCards();
-                     loading.setVisibility(View.INVISIBLE);
-                 }
-             }
-         });
-    }
-    /*
-    public void checkUserTypeold() {
-        loading.setVisibility(View.VISIBLE);
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-       // final FirebaseFirestore DB = FirebaseFirestore.getInstance();
-        final CollectionReference employeeCollectionRef = DB.collection("Employee");
-        final CollectionReference employerCollectionRef = DB.collection("Employer");
-        currentId = user.getUid();
-        DocumentReference doc = employeeCollectionRef.document(user.getUid());
-        doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot snapshot = task.getResult();
-                    if (snapshot.exists()) {
-                        Log.i("snap", "Employee");
-                        userType = "Employee";
-                        oppositeUserType = "Employer";
-                        getOppositeTypeUsers();
-                        loading.setVisibility(View.INVISIBLE);
-                    }
-                }
-            }
-        });
-        doc = employerCollectionRef.document(user.getUid());
-        doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot snapshot = task.getResult();
-                    if (snapshot.exists()) {
-                        Log.i("snap", "Employer");
-                        userType = "Employer";
-                        oppositeUserType = "Employee";
-                        getOppositeTypeUsers();
-                        loading.setVisibility(View.INVISIBLE);
-                    }
-                }
-            }
+        DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).get().addOnCompleteListener(task -> {
+           if(task.isSuccessful()){
+               Log.i("dog","ts");
+               Map<String,Object> userInfo = (Map<String, Object>) task.getResult().getData().get("user");
+               Log.i("dog",userInfo.toString());
+               thisUser = new Users(userInfo);
+               userType = thisUser.getUserType();
+               Log.i("dog","userType: " + userType);
+               switch (userType){
+                   case GlobalVerbs.EMPLOYEE:
+                       oppositeUserType = GlobalVerbs.EMPLOYER;
+                       break;
+                   case GlobalVerbs.EMPLOYER:
+                       oppositeUserType = GlobalVerbs.EMPLOYEE;
+                       break;
+               }
+               findOppositeCards();
+               loading.setVisibility(View.INVISIBLE);
+           }
         });
 
-    }*/
+    }
+
     //show cards of opposite type that the user did not watch before
     public void findOppositeCards(){
-        DB.collection(GlobalVerbs.USERS_COLLECTION).whereEqualTo(GlobalVerbs.USER_TYPE,oppositeUserType).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Log.i("dog","find");
+        Log.i("dog",userType);
+        DB.collection(GlobalVerbs.USERS_COLLECTION).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
+                    Log.i("dog","ts");
                     QuerySnapshot snapshot = task.getResult();
                     if(!snapshot.isEmpty()){
+                        Log.i("dog","notempty");
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                          //  Map<String,Object>data = document.getData();
-                            //check if user saw this card before
-                            DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.WATCHED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            Map<String,Object>data = (Map<String, Object>) document.getData().get(GlobalVerbs.USERS_USER);
+                            Log.i("dog","data: "+data.toString());
+                            Users tempUser = new Users(data);
+                            Log.i("dog","tempusertype "+tempUser.getUserType());
+                            Log.i("dog", "oppositeUserType  " + oppositeUserType );
+                            if (tempUser.getUserType().equals(oppositeUserType)){
+                                DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.WATCHED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                     if (task.isSuccessful()) {
@@ -264,12 +235,16 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         Log.i("snap", watched.toString());
                                         if (!watched.contains(document.getId())) {
-                                            showUserOnCard((String)document.getId(),document.getString(GlobalVerbs.USER_NAME),document.getString(GlobalVerbs.PROFILE_IMAGE_URL));
+                                            Log.i("dog","show!!!!!!!");
+                                            showUserOnCard(tempUser,document.getId());
+                                          //  showUserOnCard((String)document.getId(),document.getString(GlobalVerbs.USER_NAME),document.getString(GlobalVerbs.PROFILE_IMAGE_URL));
                                         }
                                     }
                                 }
-                            });
+                            });}
                         }
+                    }else{
+                        Log.i("dog","empty");
                     }
                 }
             }
@@ -313,8 +288,8 @@ public class MainActivity extends AppCompatActivity {
      */
 
 
-    public void showUserOnCard(String id,String name,String profileImageUrl){
-        Cards item = new Cards(id,name,profileImageUrl);
+    public void showUserOnCard(Users oppositeUser,String id){
+        Cards item = new Cards(oppositeUser,id);
         rowItems.add(item);
         arrayAdapter.notifyDataSetChanged();
     }

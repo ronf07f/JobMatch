@@ -42,7 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GetMoreInfoActivity extends AppCompatActivity {
-    private EditText nameField, phoneField;
+    private EditText nameField, phoneField,xpField,positionField;
     private Button backButton,confirmButton;
     private ImageView profileImage;
     Uri cam_uri;
@@ -54,7 +54,7 @@ public class GetMoreInfoActivity extends AppCompatActivity {
 
     private DocumentReference userDB;
 
-    private String userId, name, phone, profileImageUrl,userType;
+    private String userId, name, phone, profileImageUrl,userType,xp;
 
     private Uri resultUri;
     @Override
@@ -69,14 +69,24 @@ public class GetMoreInfoActivity extends AppCompatActivity {
     public void init(){
         nameField =  findViewById(R.id.name);
         phoneField = findViewById(R.id.phone);
+        xpField = findViewById(R.id.xp);
       //  backButton = findViewById(R.id.back);
         confirmButton = findViewById(R.id.confirm);
         profileImage = findViewById(R.id.profilePic);
+        userType = getIntent().getStringExtra(GlobalVerbs.USER_TYPE);
+        switch (userType){
+            case GlobalVerbs.EMPLOYEE:
+                xpField.setHint("What is your experience ?");
+                break;
+            case GlobalVerbs.EMPLOYER:
+                xpField.setHint("is any experience needed for the job you offer? describe");
+                break;
 
-
-
+        }
+        Log.i("dog",userType+" asfadsfasdf ");
         userId = mAuth.getCurrentUser().getUid();
         Log.i("banana",""+userId);
+
 
 
         userDB=DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId);
@@ -85,29 +95,13 @@ public class GetMoreInfoActivity extends AppCompatActivity {
     }
 
     private void getUserInfo() {
-        userDB.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot doc, @Nullable FirebaseFirestoreException error) {
-                if(doc.exists()){
-                    if(doc.get("name")!=null){
+
                         Log.i("snap","name");
-                        name = doc.getString("name");
+                        name = getIntent().getStringExtra(GlobalVerbs.USER_NAME);
                         Log.i("snap",name);
                         nameField.setText(name);
-                    }
-                    if(doc.get("phone")!=null){
-                        phone = doc.getString("phone");
-                        phoneField.setText(phone);
-                    }
-                    if(doc.get("profileImageUrl")!=null){
-                        profileImageUrl = doc.getString("profileImageUrl");
-                        Glide.with(getApplication()).load(profileImageUrl).into(profileImage);
 
 
-                    }
-                }
-            }
-        });
     }
 
     public void listeners(){
@@ -117,6 +111,8 @@ public class GetMoreInfoActivity extends AppCompatActivity {
 
                 if(nameField!=null&&phoneField!=null)
                     saveUserInfo();
+                    Intent intent = new Intent(GetMoreInfoActivity.this,MainActivity.class);
+                    startActivity(intent);
 
 
             }
@@ -223,10 +219,7 @@ public class GetMoreInfoActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onSuccess(Uri uri) {
                                                     String imageUrl = uri.toString();
-                                                    Map<String,Object> userInfo = new HashMap<>();
-                                                    userInfo.put(GlobalVerbs.PROFILE_IMAGE_URL, imageUrl.toString());
-                                                    userDB.update(userInfo);
-
+                                                    profileImageUrl=imageUrl.toString();
                                                     return;
                                                 }
                                             });
@@ -279,9 +272,7 @@ public class GetMoreInfoActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         String imageUrl = uri.toString();
-                                        Map<String,Object> userInfo = new HashMap<>();
-                                        userInfo.put(GlobalVerbs.PROFILE_IMAGE_URL, imageUrl.toString());
-                                        userDB.update(userInfo);
+                                        profileImageUrl=imageUrl.toString();
 
                                         return;
                                     }
@@ -305,13 +296,17 @@ public class GetMoreInfoActivity extends AppCompatActivity {
     });
 
     private void saveUserInfo() {
+        Log.i("dog","saveUserInfo");
         name = nameField.getText().toString();
         phone = phoneField.getText().toString();
-
+        xp = xpField.getText().toString();
+        Users user = new Users(name,phone,15,profileImageUrl,userType,xp);
         Map<String,Object> userInfo = new HashMap<>();
-        userInfo.put("name",name);
-        userInfo.put("phone",phone);
-        userDB.update(userInfo);
+        userInfo.put("user",user);
+       // userInfo.put("name",name);
+        //userInfo.put("phone",phone);
+       // userInfo.put("user",user);
+        userDB.set(userInfo);
     }
     /*
 

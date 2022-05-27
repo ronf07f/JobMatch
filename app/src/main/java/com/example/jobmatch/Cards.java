@@ -1,72 +1,57 @@
 package com.example.jobmatch;
 
-public class Cards {
-    private String userId;
-    private String name;
-    private int age;
-    private String position;
-    private String job_OR_perv_jobs;
-    private String ProfileImageUrl;
+import com.google.firebase.firestore.auth.User;
 
-    public Cards(String userId, String name,String profileImageUrl) {
-        this.ProfileImageUrl = profileImageUrl;
-        this.userId = userId;
-        this.name = name;
-    }
-    /*
-    public Cards(String userId, String name, int age, String position, String job_OR_perv_jobs) {
-        this.userId = userId;
-        this.name = name;
+public class Cards extends Users{
+    private String userId;
+
+
+
+/*
+    public Cards(String userName, String phone, int age, String profileImageUrl) {
+        this.userName = userName;
+        this.phone = phone;
         this.age = age;
-        this.position = position;
-        this.job_OR_perv_jobs = job_OR_perv_jobs;
+        this.ProfileImageUrl = profileImageUrl;
+    }*/
+    public Cards(Users user,String userId){
+        super(user.getUserName(),user.getPhone(), user.getAge(), user.getProfileImageUrl(),user.getUserType(),user.getExperience());
+        this.userId=userId;
     }
-*/
+    public String getExperienceForCard(){
+        String prefix = "";
+        switch (getUserType()){
+            case GlobalVerbs.EMPLOYEE:
+                prefix = "Experience:";
+                break;
+            case GlobalVerbs.EMPLOYER:
+                prefix = "Needed Experience:";
+                break;
+        }
+        return prefix+" "+getExperience();
+    }
+    public String getUserNameForCard(){
+        String prefix = "Name:";
+        return prefix+" "+getUserName();
+    }
+    public String getPhoneForCard(){
+        String prefix = "phone";
+        return prefix+" "+getUserName();
+    }
+    public String getAgeForCard(){
+        String prefix = "";
+        switch (getUserType()){
+            case GlobalVerbs.EMPLOYEE:
+                prefix = "Age:";
+                break;
+            case GlobalVerbs.EMPLOYER:
+                prefix = "Required Age:";
+                break;
+        }
+        return prefix+" "+getAge();
+    }
+
     public String getUserId() {
         return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public String getJob_OR_perv_jobs() {
-        return job_OR_perv_jobs;
-    }
-
-    public void setJob_OR_perv_jobs(String job_OR_perv_jobs) {
-        this.job_OR_perv_jobs = job_OR_perv_jobs;
-    }
-
-    public String getProfileImageUrl() {
-        return ProfileImageUrl;
-    }
-
-    public void setProfileImageUrl(String profileImageUrl) {
-        ProfileImageUrl = profileImageUrl;
     }
 }

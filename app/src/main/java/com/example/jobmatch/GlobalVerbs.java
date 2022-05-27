@@ -13,5 +13,7 @@ public class GlobalVerbs {
     public static final String MATCH = "match";
     public static final String EMPLOYEE = "Employee";
     public static final String EMPLOYER = "Employer";
+    public static final String TAG = "myLog";
+    public static final String USERS_USER = "user";
 
 }

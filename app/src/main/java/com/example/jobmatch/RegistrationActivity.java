@@ -31,9 +31,10 @@ public class RegistrationActivity extends AppCompatActivity {
     private Button bRegister;
     private EditText mEmail, mPassword ,mName;
     private RadioGroup mRadioGroup;
-
+    public String name,userType;
     private FirebaseAuth mAuth;
     private  FirebaseAuth.AuthStateListener firebaseAuthStateListener;
+
 
 
     @Override
@@ -84,13 +85,14 @@ public class RegistrationActivity extends AppCompatActivity {
                             String userId = mAuth.getCurrentUser().getUid();
                             Log.i("sss",radioButton.getText().toString());
                             final FirebaseFirestore DB = FirebaseFirestore.getInstance();
+                            name=mName.getText().toString();
+                            userType = radioButton.getText().toString();
+                            Intent intent = new Intent(RegistrationActivity.this , GetMoreInfoActivity.class);
+                            intent.putExtra(GlobalVerbs.USER_NAME,name);
+                            intent.putExtra(GlobalVerbs.USER_TYPE,userType);
+                            startActivity(intent);
 
-                            //add user to the fireStore database
-                            Map<String,Object> data = new HashMap<>();
-                            data.put(GlobalVerbs.USER_NAME , mName.getText().toString());
-                            data.put(GlobalVerbs.USER_TYPE , radioButton.getText().toString());
-                            final DocumentReference userRef = DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId);
-                            userRef.set(data);
+
 
 
                         }
@@ -107,8 +109,11 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user != null){
+                    /*
                     Intent intent = new Intent(RegistrationActivity.this , GetMoreInfoActivity.class);
-                    startActivity(intent);
+                    intent.putExtra(GlobalVerbs.USER_NAME,"asdfasdf");
+                    intent.putExtra(GlobalVerbs.USER_TYPE,userType+"fsa");
+                    startActivity(intent);*/
                     finish();
                     return;
                 }

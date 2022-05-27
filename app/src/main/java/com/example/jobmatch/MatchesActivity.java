@@ -49,7 +49,8 @@ public class MatchesActivity extends AppCompatActivity {
     private void setUserName(){
         DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentUserId).get().addOnCompleteListener(task -> {
            if(task.isSuccessful()){
-               currentUserName= task.getResult().getString(GlobalVerbs.USER_PHONE);
+               //currentUserName= task.getResult().getString(GlobalVerbs.USER_PHONE);
+               currentUserName= "abc";
            }
         });
     }
@@ -62,7 +63,7 @@ public class MatchesActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
 
                     for (QueryDocumentSnapshot doc : task.getResult()) {
-                        Log.i("fff","getMatchesID");
+                        Log.i("dog","getMatchesID");
                         addMatchToRecycler(doc.getId());
                     }
                 }
@@ -78,7 +79,7 @@ public class MatchesActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
                     Log.i("fff","secces");
-                    String name = task.getResult().getString(GlobalVerbs.USER_NAME);
+                    String name =" task.getResult().getString(GlobalVerbs.USER_NAME)";
                     String profileImage = task.getResult().getString(GlobalVerbs.PROFILE_IMAGE_URL);
                     String phone = task.getResult().getString(GlobalVerbs.USER_PHONE);
                     Log.i("fff",name);

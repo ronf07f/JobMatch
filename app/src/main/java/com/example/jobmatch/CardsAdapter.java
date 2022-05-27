@@ -25,9 +25,13 @@ public class CardsAdapter extends ArrayAdapter<Cards> {
         if(convertView == null)
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item, parent, false);
         TextView name = (TextView) convertView.findViewById(R.id.item_name);
+        TextView age = (TextView) convertView.findViewById(R.id.item_age);
+        TextView xp = (TextView) convertView.findViewById(R.id.xp);
         ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
-        name.setText(card_item.getName());
+        name.setText(card_item.getUserNameForCard());
+        age.setText(card_item.getAgeForCard());
+        xp.setText(card_item.getExperienceForCard());
         Glide.with(getContext()).load(card_item.getProfileImageUrl()).into(image);
         return convertView;
 

@@ -1,6 +1,8 @@
 package com.example.jobmatch;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +27,7 @@ public  class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MyViewH
         this.context = context;
     }
 
-    public class MyViewHolder extends  RecyclerView.ViewHolder{
+    public class MyViewHolder extends  RecyclerView.ViewHolder  {
         private TextView matchID;
         private TextView matchName;
         private ImageView matchImage;
@@ -36,6 +38,12 @@ public  class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MyViewH
             matchID=itemView.findViewById(R.id.matchID);
             matchName = itemView.findViewById(R.id.matchName);
             matchImage = itemView.findViewById(R.id.matchProfilePic);
+
+            itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(),SendMessageActivity.class);
+                v.getContext().startActivity(intent);
+
+            });
         }
 
     }

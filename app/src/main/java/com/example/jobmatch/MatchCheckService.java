@@ -44,7 +44,7 @@ public class MatchCheckService extends Service {
 
         final  String CHANNEL_ID = "Foreground";
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_LOW);
             getSystemService(NotificationManager.class).createNotificationChannel(channel);
             Notification.Builder notification = new Notification.Builder(this,CHANNEL_ID)
                     //.setContentText("text")

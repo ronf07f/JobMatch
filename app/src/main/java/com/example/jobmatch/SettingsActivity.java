@@ -94,18 +94,18 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onEvent(@Nullable DocumentSnapshot doc, @Nullable FirebaseFirestoreException error) {
                      if(doc.exists()){
-                         if(doc.get("name")!=null){
+                         if(doc.get(GlobalVerbs.USER_NAME)!=null){
                              Log.i("snap","name");
-                             name = doc.getString("name");
+                             name = doc.getString(GlobalVerbs.USER_NAME);
                              Log.i("snap",name);
                              nameField.setText(name);
                          }
-                         if(doc.get("phone")!=null){
+                         if(doc.get(GlobalVerbs.USER_PHONE)!=null){
                              phone = doc.getString("phone");
                              phoneField.setText(phone);
                          }
-                         if(doc.get("profileImageUrl")!=null){
-                             profileImageUrl = doc.getString("profileImageUrl");
+                         if(doc.get(GlobalVerbs.PROFILE_IMAGE_URL)!=null){
+                             profileImageUrl = doc.getString(GlobalVerbs.PROFILE_IMAGE_URL);
                              Glide.with(getApplication()).load(profileImageUrl).into(profileImage);
 
 
@@ -308,8 +308,8 @@ public class SettingsActivity extends AppCompatActivity {
         phone = phoneField.getText().toString();
 
         Map<String,Object> userInfo = new HashMap<>();
-        userInfo.put("name",name);
-        userInfo.put("phone",phone);
+        userInfo.put(GlobalVerbs.USER_NAME,name);
+        userInfo.put(GlobalVerbs.USER_PHONE,phone);
         userDB.update(userInfo);
         finish();
         return;

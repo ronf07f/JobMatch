@@ -3,7 +3,9 @@ package com.example.jobmatch;
 public class GlobalVerbs {
     public static final String USERS_COLLECTION = "Users";
     public static final String PROFILE_IMAGE_URL = "profileImage";
+    public static final String USER_PHONE = "phone";
     public static final String USER_NAME = "name";
+    public static final String OTHER_USER_NAME = "name";
     public static final String USER_TYPE = "userType";
     public static final String WATCHED = "Watched";
     public static final String SWIPED_RIGHT = "Yep";

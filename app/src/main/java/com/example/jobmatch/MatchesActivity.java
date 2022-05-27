@@ -29,17 +29,29 @@ public class MatchesActivity extends AppCompatActivity {
 
 
     private String currentUserId ;
+
+
+    private String currentUserName ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_matches);
         DB = FirebaseFirestore.getInstance();
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        setUserName();
         matchesList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
         getMatchesID();
 
 
+    }
+
+    private void setUserName(){
+        DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentUserId).get().addOnCompleteListener(task -> {
+           if(task.isSuccessful()){
+               currentUserName= task.getResult().getString(GlobalVerbs.USER_PHONE);
+           }
+        });
     }
 
     private void getMatchesID() {
@@ -68,8 +80,9 @@ public class MatchesActivity extends AppCompatActivity {
                     Log.i("fff","secces");
                     String name = task.getResult().getString(GlobalVerbs.USER_NAME);
                     String profileImage = task.getResult().getString(GlobalVerbs.PROFILE_IMAGE_URL);
+                    String phone = task.getResult().getString(GlobalVerbs.USER_PHONE);
                     Log.i("fff",name);
-                    matchesList.add(new MatchesObj(matchId,name,profileImage));
+                    matchesList.add(new MatchesObj(matchId,name,profileImage,phone,currentUserName));
                     setAdapter();
 
                 }
@@ -88,7 +101,7 @@ public class MatchesActivity extends AppCompatActivity {
     }
 
     private void setUserInfo() {
-        matchesList.add(new MatchesObj("123123","namee","url"));
+        matchesList.add(new MatchesObj("123123","namee","url","phone","Asdasd"));
 
 
     }

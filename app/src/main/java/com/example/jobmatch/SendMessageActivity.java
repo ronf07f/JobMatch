@@ -8,6 +8,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ public class SendMessageActivity extends AppCompatActivity {
     private EditText mEditText ;
     private TextView to;
     private TextView msgStarter;
+    private Button send;
     private String matchName;
     private String matchPhone;
     private String currentName;
@@ -28,15 +30,22 @@ public class SendMessageActivity extends AppCompatActivity {
 
         init();
         setUpXml(matchName,currentName);
-
-
-        sendSMS(matchPhone,"test2");
+        listeners();
 
     }
+    private void listeners(){
+        send.setOnClickListener(v -> {
+            Log.i("sms","send button clicked");
+            String smsMsg = msgStarter.getText()+" "+mEditText.getText();
+            Log.i("sms","msg"+smsMsg);
+            sendSMS(matchPhone,smsMsg);
+        });
 
+    }
     private void init(){
         mEditText = (EditText) findViewById(R.id.msg);
         to = findViewById(R.id.to);
+        send= findViewById(R.id.send);
         msgStarter = findViewById(R.id.msgStarter);
         matchName = getIntent().getStringExtra(GlobalVerbs.OTHER_USER_NAME);
         currentName = getIntent().getStringExtra(GlobalVerbs.USER_NAME);

@@ -10,16 +10,16 @@ import android.util.Log;
 
 public class BaseActivity extends AppCompatActivity {
     private final CheckInternetBroadcastReceiver checkInternetBroadcastReceiver = new CheckInternetBroadcastReceiver();
-    public static AlertDialog alertDialog;
+    public static AlertDialog noInternetAlert;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("msg")
+        builder.setMessage("no internet connection")
                 .setCancelable(false);
-        alertDialog = builder.create();
+        noInternetAlert = builder.create();
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onCreate");
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(checkInternetBroadcastReceiver,filter);

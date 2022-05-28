@@ -2,6 +2,8 @@ package com.example.jobmatch;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,9 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
-
-
+public class MainActivity extends BaseActivity {
 
     private CardsAdapter arrayAdapter;
     private FirebaseAuth mAuth;

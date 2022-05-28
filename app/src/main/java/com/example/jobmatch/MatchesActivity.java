@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
-public class MatchesActivity extends AppCompatActivity {
+public class MatchesActivity extends BaseActivity {
 
     private ArrayList<MatchesObj> matchesList;
     private RecyclerView recyclerView;

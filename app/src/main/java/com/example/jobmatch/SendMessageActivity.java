@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class SendMessageActivity extends AppCompatActivity {
+public class SendMessageActivity extends BaseActivity {
 
     private EditText mEditText ;
     private TextView to;

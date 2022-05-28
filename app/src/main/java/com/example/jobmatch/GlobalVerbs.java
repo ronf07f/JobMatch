@@ -1,5 +1,7 @@
 package com.example.jobmatch;
 
+import android.app.AlertDialog;
+
 public class GlobalVerbs {
     public static final String USERS_COLLECTION = "Users";
     public static final String PROFILE_IMAGE_URL = "profileImage";

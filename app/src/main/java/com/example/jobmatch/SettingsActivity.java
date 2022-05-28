@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends BaseActivity {
     private EditText nameField, phoneField,xpField;
     private Button backButton,confirmButton;
     private ImageView profileImage;

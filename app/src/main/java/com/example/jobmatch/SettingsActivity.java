@@ -33,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
     private EditText nameField, phoneField,xpField;
@@ -75,13 +76,16 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
 
         }
-        userId = mAuth.getCurrentUser().getUid();
+        userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         userDB=DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId);
     }
 
     private void getUserInfo() {
         userDB.addSnapshotListener((doc, error) -> {
-            Map<String,Object> userInfo = (Map<String, Object>) doc.getData().get(GlobalVerbs.USERS_USER);
+            assert doc != null;
+            @SuppressWarnings("unchecked")
+            Map<String,Object> userInfo = (Map<String, Object>) Objects.requireNonNull(doc.getData()).get(GlobalVerbs.USERS_USER);
+            assert userInfo != null;
             Users tempUser = new Users(userInfo);
                 Log.i("snap","name");
                 name = tempUser.getUserName();
@@ -182,6 +186,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            assert bitmap != null;
                             bitmap.compress(Bitmap.CompressFormat.JPEG,20,baos);
                             byte[] pic =  baos.toByteArray();
                             UploadTask uploadTask = filepath.putBytes(pic);
@@ -219,6 +224,7 @@ public class SettingsActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    assert bitmap != null;
                     bitmap.compress(Bitmap.CompressFormat.JPEG,20,baos);
                     byte[] pic =  baos.toByteArray();
                     UploadTask uploadTask = filepath.putBytes(pic);

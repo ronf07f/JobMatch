@@ -59,7 +59,7 @@ public class RegistrationActivity extends AppCompatActivity {
         bRegister.setOnClickListener(v -> {
 
             int selectId = mRadioGroup.getCheckedRadioButtonId();
-            final  RadioButton radioButton = (RadioButton)  findViewById(selectId);
+            final  RadioButton radioButton = findViewById(selectId);
 
 
             final  String email = mEmail.getText().toString();

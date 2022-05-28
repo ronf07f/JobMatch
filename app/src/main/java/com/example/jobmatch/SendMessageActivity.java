@@ -41,7 +41,7 @@ public class SendMessageActivity extends AppCompatActivity {
 
     }
     private void init(){
-        mEditText = (EditText) findViewById(R.id.msg);
+        mEditText = findViewById(R.id.msg);
         to = findViewById(R.id.to);
         send= findViewById(R.id.send);
         msgStarter = findViewById(R.id.msgStarter);

@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private CardsAdapter arrayAdapter;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         checkUserType();
         rowItems = new ArrayList<>();
         arrayAdapter = new CardsAdapter(this, R.layout.item, rowItems );
-        SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
+        SwipeFlingAdapterView flingContainer = findViewById(R.id.frame);
         flingContainer.setAdapter(arrayAdapter);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
@@ -115,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.my_menu,menu);
         return true;
     }
+    @SuppressLint("NonConstantResourceId")
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
         int id = item.getItemId();
         switch (id){
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             if(task.isSuccessful()){
                 DocumentSnapshot snapshot = task.getResult();
                 if(snapshot.exists()){
-                    Log.i("snap",(String) userId);
+                    Log.i("snap", userId);
                     Map<String,Object> data = new HashMap<>();
                     data.put("match","match");
                     DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.MATCH).document(userId).set(data);
@@ -152,11 +154,15 @@ public class MainActivity extends AppCompatActivity {
         loading.setVisibility(View.VISIBLE);
         Log.i(GlobalVerbs.TAG,"checkUserType");
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
         currentId = user.getUid();
         DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).get().addOnCompleteListener(task -> {
            if(task.isSuccessful()){
+
                Log.i("dog","ts");
-               Map<String,Object> userInfo = (Map<String, Object>) task.getResult().getData().get("user");
+               @SuppressWarnings("unchecked")
+               Map<String,Object> userInfo = (Map<String, Object>) Objects.requireNonNull(task.getResult().getData()).get("user");
+               assert userInfo != null;
                Log.i("dog",userInfo.toString());
                thisUser = new Users(userInfo);
                userType = thisUser.getUserType();
@@ -187,8 +193,10 @@ public class MainActivity extends AppCompatActivity {
                 if(!snapshot.isEmpty()){
                     Log.i("dog","not empty");
                     for (QueryDocumentSnapshot document : task.getResult()) {
+                        @SuppressWarnings("unchecked")
                         Map<String,Object>data = (Map<String, Object>) document.getData().get(GlobalVerbs.USERS_USER);
-                        Log.i("dog","data: "+data.toString());
+                        assert data != null;
+                        Log.i("dog","data: "+ data);
                         Users tempUser = new Users(data);
                         Log.i("dog","temp usertype "+tempUser.getUserType());
                         Log.i("dog", "oppositeUserType  " + oppositeUserType );

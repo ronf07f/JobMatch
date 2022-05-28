@@ -14,11 +14,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Objects;
+
 public class MatchCheckService extends Service {
 
     private final FirebaseFirestore DB =FirebaseFirestore.getInstance();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    String userId = mAuth.getCurrentUser().getUid();
+    String userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
     boolean firstRun= true;
     public MatchCheckService() {
     }
@@ -53,6 +55,7 @@ public class MatchCheckService extends Service {
                return;
            }
 
+           assert snapshots != null;
            for (DocumentChange dc : snapshots.getDocumentChanges()) {
                switch (dc.getType()) {
                    case ADDED:

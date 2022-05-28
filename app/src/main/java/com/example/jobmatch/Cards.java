@@ -25,11 +25,6 @@ public class Cards extends Users{
         return prefix+" "+getUserName();
     }
 
-    public String getPhoneForCard(){
-        String prefix = "phone";
-        return prefix+" "+getUserName();
-    }
-
     public String getAgeForCard(){
         String prefix = "";
         switch (getUserType()){

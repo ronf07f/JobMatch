@@ -16,6 +16,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class MatchesActivity extends AppCompatActivity {
 
@@ -33,7 +34,7 @@ public class MatchesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_matches);
         DB = FirebaseFirestore.getInstance();
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        currentUserId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         setUserName();
         matchesList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
@@ -69,7 +70,9 @@ public class MatchesActivity extends AppCompatActivity {
         DocumentReference userDB = DB.collection(GlobalVerbs.USERS_COLLECTION).document(matchId);
         userDB.get().addOnCompleteListener(task -> {
             if(task.isSuccessful()){
-                Map<String,Object> userInfo = (Map<String, Object>) task.getResult().getData().get("user");
+                @SuppressWarnings("unchecked")
+                Map<String,Object> userInfo = (Map<String, Object>) Objects.requireNonNull(task.getResult().getData()).get("user");
+                assert userInfo != null;
                 Log.i("dog",userInfo.toString());
                 Users tempUser = new Users(userInfo);
                 Log.i("fff","success");

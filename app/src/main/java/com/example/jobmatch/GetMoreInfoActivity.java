@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class GetMoreInfoActivity extends AppCompatActivity {
     private EditText nameField, phoneField,xpField;
@@ -37,7 +38,10 @@ public class GetMoreInfoActivity extends AppCompatActivity {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore DB = FirebaseFirestore.getInstance();
     private DocumentReference userDB;
-    private String userId, name, phone, profileImageUrl,userType,xp;
+    private String userId;
+    private String name;
+    private String profileImageUrl;
+    private String userType;
     private Uri resultUri ,cam_uri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +68,7 @@ public class GetMoreInfoActivity extends AppCompatActivity {
                 break;
 
         }
-        userId = mAuth.getCurrentUser().getUid();
+        userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         userDB=DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId);
     }
 
@@ -140,6 +144,7 @@ public class GetMoreInfoActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            assert bitmap != null;
                             bitmap.compress(Bitmap.CompressFormat.JPEG,20,baos);
                             byte[] pic =  baos.toByteArray();
                             UploadTask uploadTask = filepath.putBytes(pic);
@@ -175,6 +180,7 @@ public class GetMoreInfoActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                assert bitmap != null;
                 bitmap.compress(Bitmap.CompressFormat.JPEG,20,baos);
                 byte[] pic =  baos.toByteArray();
                 UploadTask uploadTask = filepath.putBytes(pic);
@@ -197,9 +203,9 @@ public class GetMoreInfoActivity extends AppCompatActivity {
     private void saveUserInfo() {
         Log.i("dog","saveUserInfo");
         name = nameField.getText().toString();
-        phone = phoneField.getText().toString();
-        xp = xpField.getText().toString();
-        Users user = new Users(name,phone,15,profileImageUrl,userType,xp);
+        String phone = phoneField.getText().toString();
+        String xp = xpField.getText().toString();
+        Users user = new Users(name, phone,15,profileImageUrl,userType, xp);
         Map<String,Object> userInfo = new HashMap<>();
         userInfo.put("user",user);
         userDB.set(userInfo);

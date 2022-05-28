@@ -1,12 +1,10 @@
 package com.example.jobmatch;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,36 +38,24 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void listeners(){
 
-        bLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-                return;
-            }
+        bLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
-        bRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(WelcomeActivity.this, RegistrationActivity.class);
-                startActivity(intent);
-                finish();
-                return;
-            }
+        bRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(WelcomeActivity.this, RegistrationActivity.class);
+            startActivity(intent);
+            finish();
         });
 
         mAuth = FirebaseAuth.getInstance();
-        firebaseAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user != null){
-                    Intent intent = new Intent(WelcomeActivity.this , MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                    return;
-                }
+        firebaseAuthStateListener = firebaseAuth -> {
+            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null){
+                Intent intent = new Intent(WelcomeActivity.this , MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         };
 

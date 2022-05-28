@@ -1,8 +1,6 @@
 package com.example.jobmatch;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -12,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class SendMessageActivity extends AppCompatActivity {
 
@@ -51,7 +49,8 @@ public class SendMessageActivity extends AppCompatActivity {
         currentName = getIntent().getStringExtra(GlobalVerbs.USER_NAME);
         matchPhone = getIntent().getStringExtra(GlobalVerbs.USER_PHONE);
     }
-    private void setUpXml(String name_to,String name_this){
+    @SuppressLint("SetTextI18n")
+    private void setUpXml(String name_to, String name_this){
 
         // Initialize a new GradientDrawable instance
         GradientDrawable gd = new GradientDrawable();

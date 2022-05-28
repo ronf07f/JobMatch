@@ -1,23 +1,18 @@
 package com.example.jobmatch;
 
-import androidx.annotation.NonNull;
+import android.os.Bundle;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.util.Log;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -58,15 +53,12 @@ public class MatchesActivity extends AppCompatActivity {
 
     private void getMatchesID() {
         CollectionReference matchesRef = DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentUserId).collection(GlobalVerbs.MATCH);
-        matchesRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
+        matchesRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
 
-                    for (QueryDocumentSnapshot doc : task.getResult()) {
-                        Log.i("dog","getMatchesID");
-                        addMatchToRecycler(doc.getId());
-                    }
+                for (QueryDocumentSnapshot doc : task.getResult()) {
+                    Log.i("dog","getMatchesID");
+                    addMatchToRecycler(doc.getId());
                 }
             }
         });
@@ -75,22 +67,19 @@ public class MatchesActivity extends AppCompatActivity {
     private void addMatchToRecycler(String matchId) {
 
         DocumentReference userDB = DB.collection(GlobalVerbs.USERS_COLLECTION).document(matchId);
-        userDB.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    Map<String,Object> userInfo = (Map<String, Object>) task.getResult().getData().get("user");
-                    Log.i("dog",userInfo.toString());
-                    Users tempUser = new Users(userInfo);
-                    Log.i("fff","secces");
-                    String name = tempUser.getUserName();
-                    String profileImage = tempUser.getProfileImageUrl();
-                    String phone = tempUser.getPhone();
-                    Log.i("fff",name);
-                    matchesList.add(new MatchesObj(matchId,name,profileImage,phone,currentUserName));
-                    setAdapter();
+        userDB.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                Map<String,Object> userInfo = (Map<String, Object>) task.getResult().getData().get("user");
+                Log.i("dog",userInfo.toString());
+                Users tempUser = new Users(userInfo);
+                Log.i("fff","success");
+                String name = tempUser.getUserName();
+                String profileImage = tempUser.getProfileImageUrl();
+                String phone = tempUser.getPhone();
+                Log.i("fff",name);
+                matchesList.add(new MatchesObj(matchId,name,profileImage,phone,currentUserName));
+                setAdapter();
 
-                }
             }
         });
 
@@ -105,9 +94,4 @@ public class MatchesActivity extends AppCompatActivity {
        recyclerView.setAdapter(adapter);
     }
 
-    private void setUserInfo() {
-        matchesList.add(new MatchesObj("123123","namee","url","phone","Asdasd"));
-
-
-    }
 }

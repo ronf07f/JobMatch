@@ -1,16 +1,11 @@
 package com.example.jobmatch;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,19 +18,18 @@ import java.util.ArrayList;
 
 public  class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MyViewHolder> {
 
-    private ArrayList<MatchesObj> matchesList ;
-    private Context context;
-    private String currentName;
+    private final ArrayList<MatchesObj> matchesList ;
+    private final Context context;
 
     public MatchesAdapter(ArrayList<MatchesObj> matchesList, Context context){
         this.matchesList = matchesList;
         this.context = context;
     }
 
-    public class MyViewHolder extends  RecyclerView.ViewHolder  {
-        private TextView matchID;
-        private TextView matchName;
-        private ImageView matchImage;
+    public static class MyViewHolder extends  RecyclerView.ViewHolder  {
+        private final TextView matchID;
+        private final TextView matchName;
+        private final ImageView matchImage;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -43,18 +37,7 @@ public  class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.MyViewH
             matchID=itemView.findViewById(R.id.matchID);
             matchName = itemView.findViewById(R.id.matchName);
             matchImage = itemView.findViewById(R.id.matchProfilePic);
-
-           /* itemView.setOnClickListener(v -> {
-
-                Log.i("sms","item clicked");
-                Intent intent = new Intent(v.getContext(),SendMessageActivity.class);
-                v.getContext().startActivity(intent);
-
-
-            });*/
         }
-
-
     }
 
     @NonNull

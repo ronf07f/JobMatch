@@ -3,7 +3,8 @@ package com.example.jobmatch;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
+
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,35 +12,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class MainActivity extends AppCompatActivity {
-
-    private Cards cards_data[];
     private CardsAdapter arrayAdapter;
     private FirebaseAuth mAuth;
     private String currentId;
@@ -49,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar loading;
 
     private  FirebaseFirestore DB ;
-    ListView listView;
     List<Cards> rowItems;
 
 
@@ -60,15 +47,12 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent);
         }
-        Context context = getApplicationContext();
         DB = FirebaseFirestore.getInstance();
         setContentView(R.layout.activity_main);
         loading = findViewById(R.id.progressBar);
         mAuth = FirebaseAuth.getInstance();
         checkUserType();
-        rowItems = new ArrayList<Cards>();
-       // al.add("php");
-      //  Log.i("snap",oppositeUserType + "");
+        rowItems = new ArrayList<>();
         arrayAdapter = new CardsAdapter(this, R.layout.item, rowItems );
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
         flingContainer.setAdapter(arrayAdapter);
@@ -117,20 +101,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onScroll(float scrollProgressPercent) {
-                View view = flingContainer.getSelectedView();
-                //view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                //view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
             }
         });
 
 
         // Optionally add an OnItemClickListener
-        flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClicked(int itemPosition, Object dataObject) {
-                Toast.makeText(MainActivity.this, "Clicked!",Toast.LENGTH_SHORT).show();
-            }
-        });
+        flingContainer.setOnItemClickListener((itemPosition, dataObject) -> Toast.makeText(MainActivity.this, "Clicked!",Toast.LENGTH_SHORT).show());
 
     }
 
@@ -157,21 +133,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void isMatched(String userId) {
         DocumentReference currentUserYeps = DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.SWIPED_RIGHT).document(userId);
-        currentUserYeps.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot snapshot = task.getResult();
-                    if(snapshot.exists()){
-                        Log.i("snap",(String) userId);
-                        Map<String,Object> data = new HashMap<>();
-                        data.put("match","match");
-                        DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.MATCH).document(userId).set(data);
-                        DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId).collection(GlobalVerbs.MATCH).document(currentId).set(data);
-
-
-                        Toast.makeText(MainActivity.this, "Match",Toast.LENGTH_SHORT).show();
-                    }
+        currentUserYeps.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                DocumentSnapshot snapshot = task.getResult();
+                if(snapshot.exists()){
+                    Log.i("snap",(String) userId);
+                    Map<String,Object> data = new HashMap<>();
+                    data.put("match","match");
+                    DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.MATCH).document(userId).set(data);
+                    DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId).collection(GlobalVerbs.MATCH).document(currentId).set(data);
+                    Toast.makeText(MainActivity.this, "Match",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -179,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void checkUserType() {
         loading.setVisibility(View.VISIBLE);
-        Log.i("dog","chackUserType");
+        Log.i(GlobalVerbs.TAG,"checkUserType");
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         currentId = user.getUid();
         DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).get().addOnCompleteListener(task -> {
@@ -209,83 +180,40 @@ public class MainActivity extends AppCompatActivity {
     public void findOppositeCards(){
         Log.i("dog","find");
         Log.i("dog",userType);
-        DB.collection(GlobalVerbs.USERS_COLLECTION).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    Log.i("dog","ts");
-                    QuerySnapshot snapshot = task.getResult();
-                    if(!snapshot.isEmpty()){
-                        Log.i("dog","notempty");
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Map<String,Object>data = (Map<String, Object>) document.getData().get(GlobalVerbs.USERS_USER);
-                            Log.i("dog","data: "+data.toString());
-                            Users tempUser = new Users(data);
-                            Log.i("dog","tempusertype "+tempUser.getUserType());
-                            Log.i("dog", "oppositeUserType  " + oppositeUserType );
-                            if (tempUser.getUserType().equals(oppositeUserType)){
-                                DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.WATCHED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        List<String> watched = new ArrayList<>();
-                                        for (QueryDocumentSnapshot doc : task.getResult()) {
-                                            watched.add(doc.getId());
-                                        }
-                                        Log.i("snap", watched.toString());
-                                        if (!watched.contains(document.getId())) {
-                                            Log.i("dog","show!!!!!!!");
-                                            showUserOnCard(tempUser,document.getId());
-                                          //  showUserOnCard((String)document.getId(),document.getString(GlobalVerbs.USER_NAME),document.getString(GlobalVerbs.PROFILE_IMAGE_URL));
-                                        }
+        DB.collection(GlobalVerbs.USERS_COLLECTION).get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                Log.i("dog","ts");
+                QuerySnapshot snapshot = task.getResult();
+                if(!snapshot.isEmpty()){
+                    Log.i("dog","not empty");
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Map<String,Object>data = (Map<String, Object>) document.getData().get(GlobalVerbs.USERS_USER);
+                        Log.i("dog","data: "+data.toString());
+                        Users tempUser = new Users(data);
+                        Log.i("dog","temp usertype "+tempUser.getUserType());
+                        Log.i("dog", "oppositeUserType  " + oppositeUserType );
+                        if (tempUser.getUserType().equals(oppositeUserType)){
+                            DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.WATCHED).get().addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
+                                    List<String> watched = new ArrayList<>();
+                                    for (QueryDocumentSnapshot doc : task1.getResult()) {
+                                        watched.add(doc.getId());
+                                    }
+                                    Log.i("snap", watched.toString());
+                                    if (!watched.contains(document.getId())) {
+                                        Log.i("dog","show!!!!!!!");
+                                        showUserOnCard(tempUser,document.getId());
+                                      //  showUserOnCard((String)document.getId(),document.getString(GlobalVerbs.USER_NAME),document.getString(GlobalVerbs.PROFILE_IMAGE_URL));
                                     }
                                 }
                             });}
-                        }
-                    }else{
-                        Log.i("dog","empty");
                     }
+                }else{
+                    Log.i("dog","empty");
                 }
             }
         });
     }
-    /*
-   public void getOppositeTypeUsers(){
-        final FirebaseFirestore DB = FirebaseFirestore.getInstance();
-        final CollectionReference oppositeTypeUsersDB = DB.collection(oppositeUserType);
-        oppositeTypeUsersDB.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    QuerySnapshot snapshot = task.getResult();
-                    if(!snapshot.isEmpty()){
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Map<String,Object>data = document.getData();
-                            //check if user saw this card before
-                            DB.collection(userType).document((String)currentId).collection("watched").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if(task.isSuccessful()){
-                                        List<String> watched= new ArrayList<>();
-                                        for(QueryDocumentSnapshot doc : task.getResult()){
-                                            watched.add(doc.getId());
-                                        }
-                                        Log.i("snap",watched.toString());
-                                        if(!watched.contains(document.getId())){
-                                            showUserOnCard((String)document.getId(),(String) data.get("name"));
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-     */
-
 
     public void showUserOnCard(Users oppositeUser,String id){
         Cards item = new Cards(oppositeUser,id);
@@ -299,19 +227,16 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this,WelcomeActivity.class);
         startActivity(intent);
         finish();
-        return;
     }
     public void openSettings() {
         Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
         intent.putExtra(GlobalVerbs.USER_TYPE,userType);
         startActivity(intent);
-        return;
 
     }
     public void openMatches() {
         Intent intent = new Intent(MainActivity.this,MatchesActivity.class);
         startActivity(intent);
-        return;
 
     }
 }

@@ -1,21 +1,7 @@
 package com.example.jobmatch;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,17 +13,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -93,56 +80,41 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void getUserInfo() {
-        userDB.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot doc, @Nullable FirebaseFirestoreException error) {
-                Map<String,Object> userInfo = (Map<String, Object>) doc.getData().get(GlobalVerbs.USERS_USER);
-                Users tempUser = new Users(userInfo);
-                    Log.i("snap","name");
-                    name = tempUser.getUserName();
-                    Log.i("snap",name);
-                    nameField.setText(name);
-                    phone = tempUser.getPhone();
-                    phoneField.setText(phone);
-                    xp = tempUser.getExperience();
-                    xpField.setText(xp);
-                    profileImageUrl = tempUser.getProfileImageUrl();
-                    Glide.with(getApplication()).load(profileImageUrl).into(profileImage);
+        userDB.addSnapshotListener((doc, error) -> {
+            Map<String,Object> userInfo = (Map<String, Object>) doc.getData().get(GlobalVerbs.USERS_USER);
+            Users tempUser = new Users(userInfo);
+                Log.i("snap","name");
+                name = tempUser.getUserName();
+                Log.i("snap",name);
+                nameField.setText(name);
+                phone = tempUser.getPhone();
+                phoneField.setText(phone);
+                xp = tempUser.getExperience();
+                xpField.setText(xp);
+                profileImageUrl = tempUser.getProfileImageUrl();
+                Glide.with(getApplication()).load(profileImageUrl).into(profileImage);
 
 
 
-            }
         });
     }
 
     public void listeners(){
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(nameField!=null&&phoneField!=null)
-                    saveUserInfo();
-            }
+        confirmButton.setOnClickListener(v -> {
+            if(nameField!=null&&phoneField!=null)
+                saveUserInfo();
         });
 
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Intent intent = new Intent(Intent.ACTION_PICK);
-               // intent.setType("image/*");
-              //  mGetContent.launch("image/*")
-                //ImagePicker
-               // ImagePicker.Companion.with(SettingsActivity.this).start()
-                chooseProfilePicture();
-            }
+        profileImage.setOnClickListener(v -> {
+            //Intent intent = new Intent(Intent.ACTION_PICK);
+           // intent.setType("image/*");
+          //  mGetContent.launch("image/*")
+            //ImagePicker
+           // ImagePicker.Companion.with(SettingsActivity.this).start()
+            chooseProfilePicture();
         });
 
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                return;
-            }
-        });
+        backButton.setOnClickListener(v -> finish());
 
     }
 
@@ -198,8 +170,7 @@ public class SettingsActivity extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK) {
                         // There are no request codes
-                        final Uri imageUri = cam_uri;
-                        resultUri = imageUri;
+                        resultUri = cam_uri;
                         profileImage.setImageURI(resultUri);
                         if (resultUri != null) {
                             StorageReference filepath = FirebaseStorage.getInstance().getReference().child("profileImages").child(userId);
@@ -214,27 +185,12 @@ public class SettingsActivity extends AppCompatActivity {
                             bitmap.compress(Bitmap.CompressFormat.JPEG,20,baos);
                             byte[] pic =  baos.toByteArray();
                             UploadTask uploadTask = filepath.putBytes(pic);
-                            uploadTask.addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.i("banana",e.toString());
-                                }
-                            });
-                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    if(taskSnapshot.getMetadata() != null){
-                                        if(taskSnapshot.getMetadata().getReference()!=null){
-                                            Task<Uri>  result = taskSnapshot.getStorage().getDownloadUrl();
-                                            result.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                @Override
-                                                public void onSuccess(Uri uri) {
-                                                    String imageUrl = uri.toString();
-                                                    profileImageUrl=imageUrl.toString();
-                                                    return;
-                                                }
-                                            });
-                                        }
+                            uploadTask.addOnFailureListener(e -> Log.i("banana",e.toString()));
+                            uploadTask.addOnSuccessListener(taskSnapshot -> {
+                                if(taskSnapshot.getMetadata() != null){
+                                    if(taskSnapshot.getMetadata().getReference()!=null){
+                                        Task<Uri> result1 = taskSnapshot.getStorage().getDownloadUrl();
+                                        result1.addOnSuccessListener(uri -> profileImageUrl= uri.toString());
                                     }
                                 }
                             });
@@ -251,8 +207,7 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onActivityResult(Uri result) {
 
-                final Uri imageUri = result;
-                resultUri = imageUri;
+            resultUri = result;
                 profileImage.setImageURI(resultUri);
                 if (resultUri != null) {
                     StorageReference filepath = FirebaseStorage.getInstance().getReference().child("profileImages").child(userId);
@@ -267,28 +222,12 @@ public class SettingsActivity extends AppCompatActivity {
                     bitmap.compress(Bitmap.CompressFormat.JPEG,20,baos);
                     byte[] pic =  baos.toByteArray();
                     UploadTask uploadTask = filepath.putBytes(pic);
-                    uploadTask.addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.i("banana",e.toString());
-                        }
-                    });
-                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            if(taskSnapshot.getMetadata() != null){
-                                if(taskSnapshot.getMetadata().getReference()!=null){
-                                    Task<Uri>  result = taskSnapshot.getStorage().getDownloadUrl();
-                                    result.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            String imageUrl = uri.toString();
-                                            profileImageUrl=imageUrl.toString();
-
-                                            return;
-                                        }
-                                    });
-                                }
+                    uploadTask.addOnFailureListener(e -> Log.i("banana",e.toString()));
+                    uploadTask.addOnSuccessListener(taskSnapshot -> {
+                        if(taskSnapshot.getMetadata() != null){
+                            if(taskSnapshot.getMetadata().getReference()!=null){
+                                Task<Uri> result1 = taskSnapshot.getStorage().getDownloadUrl();
+                                result1.addOnSuccessListener(uri -> profileImageUrl= uri.toString());
                             }
                         }
                     });
@@ -306,60 +245,7 @@ public class SettingsActivity extends AppCompatActivity {
         Users user = new Users(name,phone,15,profileImageUrl,userType,xp);
         Map<String,Object> userInfo = new HashMap<>();
         userInfo.put("user",user);
-        // userInfo.put("name",name);
-        //userInfo.put("phone",phone);
-        // userInfo.put("user",user);
         userDB.set(userInfo);
         finish();
-        return;
     }
-    /*
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            final Uri imageUri = data.getData();
-            resultUri = imageUri;
-            profileImage.setImageURI(resultUri);
-            if (resultUri != null) {
-                StorageReference filepath = FirebaseStorage.getInstance().getReference().child("profileImages").child(userId);
-                Bitmap bitmap = null;
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), resultUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG,20,baos);
-                byte[] pic =  baos.toByteArray();
-                UploadTask uploadTask = filepath.putBytes(pic);
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.i("banana",e.toString());
-                    }
-                });
-                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Task<Uri> downloadUrl = taskSnapshot.getStorage().getDownloadUrl();
-
-                        Map<String,Object> userInfo = new HashMap<>();
-                        userInfo.put("profileImageUrl", downloadUrl.toString());
-                        userDB.update(userInfo);
-                        finish();
-                        return;
-                    }
-                });
-
-            } else {
-                finish();
-            }
-
-
-
-        }
-    }*/
 }

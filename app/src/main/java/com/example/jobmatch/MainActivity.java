@@ -30,6 +30,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+
+
+
     private CardsAdapter arrayAdapter;
     private FirebaseAuth mAuth;
     private String currentId;

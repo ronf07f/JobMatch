@@ -56,11 +56,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*
         Intent intent = new Intent(MainActivity.this,MatchCheckService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent);
-        }*/
+        }
         Context context = getApplicationContext();
         DB = FirebaseFirestore.getInstance();
         setContentView(R.layout.activity_main);
@@ -304,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void openSettings() {
         Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
-        intent.putExtra("userType",userType);
+        intent.putExtra(GlobalVerbs.USER_TYPE,userType);
         startActivity(intent);
         return;
 

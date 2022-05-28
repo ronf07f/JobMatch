@@ -48,7 +48,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity {
-    private EditText nameField, phoneField;
+    private EditText nameField, phoneField,xpField;
     private Button backButton,confirmButton;
     private ImageView profileImage;
 
@@ -59,7 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private DocumentReference userDB;
 
-    private String userId, name, phone, profileImageUrl,userType;
+    private String userId, name, phone, profileImageUrl,userType,xp;
 
     private Uri resultUri;
     @Override
@@ -75,42 +75,42 @@ public class SettingsActivity extends AppCompatActivity {
         nameField =  findViewById(R.id.name);
         phoneField = findViewById(R.id.phone);
         backButton = findViewById(R.id.back);
+        xpField = findViewById(R.id.xp);
         confirmButton = findViewById(R.id.confirm);
         profileImage = findViewById(R.id.profilePic);
+        userType = getIntent().getStringExtra(GlobalVerbs.USER_TYPE);
+        switch (userType){
+            case GlobalVerbs.EMPLOYEE:
+                xpField.setHint("What is your experience ?");
+                break;
+            case GlobalVerbs.EMPLOYER:
+                xpField.setHint("is any experience needed for the job you offer? describe");
+                break;
 
-
-
+        }
         userId = mAuth.getCurrentUser().getUid();
-        Log.i("banana",""+userId);
-
-
         userDB=DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId);
-
-
     }
 
     private void getUserInfo() {
         userDB.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot doc, @Nullable FirebaseFirestoreException error) {
-                     if(doc.exists()){
-                         if(doc.get(GlobalVerbs.USER_NAME)!=null){
-                             Log.i("snap","name");
-                             name = doc.getString(GlobalVerbs.USER_NAME);
-                             Log.i("snap",name);
-                             nameField.setText(name);
-                         }
-                         if(doc.get(GlobalVerbs.USER_PHONE)!=null){
-                             phone = doc.getString("phone");
-                             phoneField.setText(phone);
-                         }
-                         if(doc.get(GlobalVerbs.PROFILE_IMAGE_URL)!=null){
-                             profileImageUrl = doc.getString(GlobalVerbs.PROFILE_IMAGE_URL);
-                             Glide.with(getApplication()).load(profileImageUrl).into(profileImage);
+                Map<String,Object> userInfo = (Map<String, Object>) doc.getData().get(GlobalVerbs.USERS_USER);
+                Users tempUser = new Users(userInfo);
+                    Log.i("snap","name");
+                    name = tempUser.getUserName();
+                    Log.i("snap",name);
+                    nameField.setText(name);
+                    phone = tempUser.getPhone();
+                    phoneField.setText(phone);
+                    xp = tempUser.getExperience();
+                    xpField.setText(xp);
+                    profileImageUrl = tempUser.getProfileImageUrl();
+                    Glide.with(getApplication()).load(profileImageUrl).into(profileImage);
 
 
-                         }
-                     }
+
             }
         });
     }
@@ -119,7 +119,8 @@ public class SettingsActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveUserInfo();
+                if(nameField!=null&&phoneField!=null)
+                    saveUserInfo();
             }
         });
 
@@ -229,10 +230,7 @@ public class SettingsActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onSuccess(Uri uri) {
                                                     String imageUrl = uri.toString();
-                                                    Map<String,Object> userInfo = new HashMap<>();
-                                                    userInfo.put(GlobalVerbs.PROFILE_IMAGE_URL, imageUrl.toString());
-                                                    userDB.update(userInfo);
-
+                                                    profileImageUrl=imageUrl.toString();
                                                     return;
                                                 }
                                             });
@@ -285,9 +283,7 @@ public class SettingsActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             String imageUrl = uri.toString();
-                                            Map<String,Object> userInfo = new HashMap<>();
-                                            userInfo.put(GlobalVerbs.PROFILE_IMAGE_URL, imageUrl.toString());
-                                            userDB.update(userInfo);
+                                            profileImageUrl=imageUrl.toString();
 
                                             return;
                                         }
@@ -306,11 +302,14 @@ public class SettingsActivity extends AppCompatActivity {
     private void saveUserInfo() {
         name = nameField.getText().toString();
         phone = phoneField.getText().toString();
-
+        xp = xpField.getText().toString();
+        Users user = new Users(name,phone,15,profileImageUrl,userType,xp);
         Map<String,Object> userInfo = new HashMap<>();
-        userInfo.put(GlobalVerbs.USER_NAME,name);
-        userInfo.put(GlobalVerbs.USER_PHONE,phone);
-        userDB.update(userInfo);
+        userInfo.put("user",user);
+        // userInfo.put("name",name);
+        //userInfo.put("phone",phone);
+        // userInfo.put("user",user);
+        userDB.set(userInfo);
         finish();
         return;
     }

@@ -36,6 +36,14 @@
         android:ems="10"
         android:inputType="phone"
         />
+    <EditText
+        android:id="@+id/xp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:hint="xp"
+        android:minHeight="48dp" />
+
 
 
     <Button

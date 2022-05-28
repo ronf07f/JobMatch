@@ -30,11 +30,6 @@ public class Users {
         this.userType = user.get("userType").toString();
         this.experience = user.get("experience").toString();
     }
-    // public Users(HashMap user){
-
-
-    //}
-
 
     public void setUserName(String userName) {
         this.userName = userName;

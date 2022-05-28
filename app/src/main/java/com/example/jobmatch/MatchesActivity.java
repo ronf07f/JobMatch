@@ -20,6 +20,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MatchesActivity extends AppCompatActivity {
 
@@ -78,10 +79,13 @@ public class MatchesActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
+                    Map<String,Object> userInfo = (Map<String, Object>) task.getResult().getData().get("user");
+                    Log.i("dog",userInfo.toString());
+                    Users tempUser = new Users(userInfo);
                     Log.i("fff","secces");
-                    String name =" task.getResult().getString(GlobalVerbs.USER_NAME)";
-                    String profileImage = task.getResult().getString(GlobalVerbs.PROFILE_IMAGE_URL);
-                    String phone = task.getResult().getString(GlobalVerbs.USER_PHONE);
+                    String name = tempUser.getUserName();
+                    String profileImage = tempUser.getProfileImageUrl();
+                    String phone = tempUser.getPhone();
                     Log.i("fff",name);
                     matchesList.add(new MatchesObj(matchId,name,profileImage,phone,currentUserName));
                     setAdapter();

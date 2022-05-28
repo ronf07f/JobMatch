@@ -83,15 +83,8 @@ public class GetMoreInfoActivity extends AppCompatActivity {
                 break;
 
         }
-        Log.i("dog",userType+" asfadsfasdf ");
         userId = mAuth.getCurrentUser().getUid();
-        Log.i("banana",""+userId);
-
-
-
         userDB=DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId);
-
-
     }
 
     private void getUserInfo() {

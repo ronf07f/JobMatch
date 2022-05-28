@@ -23,6 +23,7 @@ public class SendMessageActivity extends AppCompatActivity {
     private String currentName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_message);
 
@@ -32,15 +33,15 @@ public class SendMessageActivity extends AppCompatActivity {
 
     }
     private void listeners(){
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
         send.setOnClickListener(v -> {
-            Log.i("sms","send button clicked");
             String smsMsg = msgStarter.getText()+" "+mEditText.getText();
-            Log.i("sms","msg"+smsMsg);
             sendSMS(matchPhone,smsMsg);
         });
 
     }
     private void init(){
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onStop");
         mEditText = findViewById(R.id.msg);
         to = findViewById(R.id.to);
         send= findViewById(R.id.send);
@@ -51,7 +52,7 @@ public class SendMessageActivity extends AppCompatActivity {
     }
     @SuppressLint("SetTextI18n")
     private void setUpXml(String name_to, String name_this){
-
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"setUpXml");
         // Initialize a new GradientDrawable instance
         GradientDrawable gd = new GradientDrawable();
         // Set the gradient drawable background to transparent
@@ -66,7 +67,8 @@ public class SendMessageActivity extends AppCompatActivity {
 
     }
     private void sendSMS(String phone,String msg){
-        Log.i("sms","sendSMS");
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"sendSMS");
+
         try {
             SmsManager smsManager =SmsManager.getDefault();
             smsManager.sendTextMessage(phone,null,msg,null,null);

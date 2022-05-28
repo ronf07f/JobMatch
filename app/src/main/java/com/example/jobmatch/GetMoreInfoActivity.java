@@ -45,7 +45,9 @@ public class GetMoreInfoActivity extends AppCompatActivity {
     private Uri resultUri ,cam_uri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onCreate");
         super.onCreate(savedInstanceState);
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "  +getComponentName());
         setContentView(R.layout.activity_get_more_info);
         init();
         listeners();
@@ -53,6 +55,7 @@ public class GetMoreInfoActivity extends AppCompatActivity {
     }
 
     public void init(){
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
         nameField =  findViewById(R.id.name);
         phoneField = findViewById(R.id.phone);
         xpField = findViewById(R.id.xp);
@@ -73,16 +76,18 @@ public class GetMoreInfoActivity extends AppCompatActivity {
     }
 
     private void getUserInfo() {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"getUserInfo");
 
-                        Log.i("snap","name");
-                        name = getIntent().getStringExtra(GlobalVerbs.USER_NAME);
-                        Log.i("snap",name);
-                        nameField.setText(name);
+        Log.i("snap","name");
+        name = getIntent().getStringExtra(GlobalVerbs.USER_NAME);
+        Log.i("snap",name);
+        nameField.setText(name);
 
 
     }
 
     public void listeners(){
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
         confirmButton.setOnClickListener(v ->  {
                 if(nameField!=null&&phoneField!=null)
                     saveUserInfo();
@@ -94,6 +99,7 @@ public class GetMoreInfoActivity extends AppCompatActivity {
     }
 
     private void chooseProfilePicture() {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"chooseProfilePicture");
         AlertDialog.Builder builder = new AlertDialog.Builder(GetMoreInfoActivity.this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.chose_profile_pic_dialog,null);
@@ -116,6 +122,7 @@ public class GetMoreInfoActivity extends AppCompatActivity {
         });}
 
         private void openCamera(){
+            Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"openCamera");
             ContentValues values = new ContentValues();
             values.put(MediaStore.Images.Media.TITLE, "New Picture");
             values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera");
@@ -184,7 +191,7 @@ public class GetMoreInfoActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.JPEG,20,baos);
                 byte[] pic =  baos.toByteArray();
                 UploadTask uploadTask = filepath.putBytes(pic);
-                uploadTask.addOnFailureListener(e -> Log.i("banana",e.toString()));
+                uploadTask.addOnFailureListener(e -> Log.i(GlobalVerbs.TAG,e.toString()));
                 uploadTask.addOnSuccessListener(taskSnapshot ->  {
 
                         if(taskSnapshot.getMetadata() != null){
@@ -201,7 +208,7 @@ public class GetMoreInfoActivity extends AppCompatActivity {
     });
 
     private void saveUserInfo() {
-        Log.i("dog","saveUserInfo");
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"saveUserInfo");
         name = nameField.getText().toString();
         String phone = phoneField.getText().toString();
         String xp = xpField.getText().toString();

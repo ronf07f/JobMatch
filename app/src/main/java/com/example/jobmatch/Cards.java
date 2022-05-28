@@ -6,7 +6,7 @@ public class Cards extends Users{
         super(user.getUserName(),user.getPhone(), user.getAge(), user.getProfileImageUrl(),user.getUserType(),user.getExperience());
         this.userId=userId;
     }
-
+//get*variable*ForCard gives back the variable with the correct prefix for the cards
     public String getExperienceForCard(){
         String prefix = "";
         switch (getUserType()){

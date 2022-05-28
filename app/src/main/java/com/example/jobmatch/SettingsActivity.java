@@ -52,6 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Uri resultUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         init();
@@ -60,6 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void init(){
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
         nameField =  findViewById(R.id.name);
         phoneField = findViewById(R.id.phone);
         backButton = findViewById(R.id.back);
@@ -81,6 +83,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void getUserInfo() {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"getUserInfo");
         userDB.addSnapshotListener((doc, error) -> {
             assert doc != null;
             @SuppressWarnings("unchecked")
@@ -104,6 +107,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void listeners(){
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
         confirmButton.setOnClickListener(v -> {
             if(nameField!=null&&phoneField!=null)
                 saveUserInfo();
@@ -123,6 +127,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void chooseProfilePicture() {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"chooseProfilePicture");
         AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.chose_profile_pic_dialog,null);
@@ -152,6 +157,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
     Uri cam_uri;
     private void openCamera() {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"openCamera");
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "New Picture");
         values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera");
@@ -245,6 +251,7 @@ public class SettingsActivity extends AppCompatActivity {
     });
 
     private void saveUserInfo() {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"saveUserInfo");
         name = nameField.getText().toString();
         phone = phoneField.getText().toString();
         xp = xpField.getText().toString();

@@ -31,6 +31,7 @@ public class MatchesActivity extends AppCompatActivity {
     private String currentUserName ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_matches);
         DB = FirebaseFirestore.getInstance();
@@ -44,6 +45,7 @@ public class MatchesActivity extends AppCompatActivity {
     }
 
     private void setUserName(){
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"setUserName");
         DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentUserId).get().addOnCompleteListener(task -> {
            if(task.isSuccessful()){
                //currentUserName= task.getResult().getString(GlobalVerbs.USER_PHONE);
@@ -53,6 +55,7 @@ public class MatchesActivity extends AppCompatActivity {
     }
 
     private void getMatchesID() {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"getMatchesID");
         CollectionReference matchesRef = DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentUserId).collection(GlobalVerbs.MATCH);
         matchesRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -66,6 +69,7 @@ public class MatchesActivity extends AppCompatActivity {
     }
 
     private void addMatchToRecycler(String matchId) {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"addMatchToRecycler");
 
         DocumentReference userDB = DB.collection(GlobalVerbs.USERS_COLLECTION).document(matchId);
         userDB.get().addOnCompleteListener(task -> {
@@ -90,11 +94,12 @@ public class MatchesActivity extends AppCompatActivity {
 
 
     private void setAdapter() {
-       MatchesAdapter adapter = new MatchesAdapter(matchesList,getApplicationContext());
-       RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-       recyclerView.setLayoutManager(layoutManager);
-       recyclerView.setItemAnimator(new DefaultItemAnimator());
-       recyclerView.setAdapter(adapter);
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"setAdapter");
+        MatchesAdapter adapter = new MatchesAdapter(matchesList,getApplicationContext());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
     }
 
 }

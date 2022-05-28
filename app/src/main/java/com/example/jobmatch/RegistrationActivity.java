@@ -29,6 +29,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         init();
@@ -37,11 +38,13 @@ public class RegistrationActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onStart");
         super.onStart();
         mAuth.addAuthStateListener(firebaseAuthStateListener);
     }
 
     private void init(){
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
         bRegister = findViewById(R.id.register);
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
@@ -50,12 +53,7 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void listeners(){
-
-
-
-
-
-
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
         bRegister.setOnClickListener(v -> {
 
             int selectId = mRadioGroup.getCheckedRadioButtonId();
@@ -83,8 +81,6 @@ public class RegistrationActivity extends AppCompatActivity {
             });
         });
 
-
-
         mAuth = FirebaseAuth.getInstance();
         firebaseAuthStateListener = firebaseAuth -> {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -97,6 +93,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onStop");
         super.onStop();
         mAuth.removeAuthStateListener(firebaseAuthStateListener);
     }

@@ -2,6 +2,7 @@ package com.example.jobmatch;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_page);
         init();
@@ -26,17 +28,20 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onStart");
         super.onStart();
         mAuth.addAuthStateListener(firebaseAuthStateListener);
     }
 
 
     private void init() {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
         bLogin = findViewById(R.id.login);
         bRegister = findViewById(R.id.register);
     }
 
     private void listeners(){
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
 
         bLogin.setOnClickListener(v -> {
             Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
@@ -62,8 +67,8 @@ public class WelcomeActivity extends AppCompatActivity {
     }
     @Override
     protected void onStop() {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onStop");
         super.onStop();
         mAuth.removeAuthStateListener(firebaseAuthStateListener);
     }
-
 }

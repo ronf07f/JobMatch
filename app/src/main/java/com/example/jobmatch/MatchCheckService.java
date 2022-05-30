@@ -53,7 +53,6 @@ public class MatchCheckService extends Service {
                Log.w("abc", "listen:error", e);
                return;
            }
-
            assert snapshots != null;
            for (DocumentChange dc : snapshots.getDocumentChanges()) {
                switch (dc.getType()) {

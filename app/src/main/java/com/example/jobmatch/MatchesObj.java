@@ -34,5 +34,4 @@ public class MatchesObj {
     public String getMatchImageUrl() {
         return matchImageUrl;
     }
-
 }

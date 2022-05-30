@@ -37,10 +37,8 @@ public class MainActivity extends BaseMenuActivity {
     private  String userType;
     private Users thisUser;
     private ProgressBar loading;
-
     private  FirebaseFirestore DB ;
     List<Cards> rowItems;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +68,6 @@ public class MainActivity extends BaseMenuActivity {
                 rowItems.remove(0);
                 arrayAdapter.notifyDataSetChanged();
             }
-
             /**
              * add to the data base that the card was watched and slided to the left(no).
              * @param dataObject

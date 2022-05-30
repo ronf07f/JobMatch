@@ -11,6 +11,15 @@ public class Users {
     private final String userType;
     private final String experience;
 
+    /**
+     * build a user
+     * @param userName
+     * @param phone
+     * @param age
+     * @param profileImageUrl
+     * @param userType
+     * @param experience
+     */
     public Users(String userName, String phone, int age, String profileImageUrl, String userType, String experience) {
         this.userName = userName;
         this.phone = phone;
@@ -20,6 +29,10 @@ public class Users {
         this.experience = experience;
     }
 
+    /**
+     * build user from map
+     * @param user
+     */
     public Users(Map user) {
         this.userName = Objects.requireNonNull(user.get("userName")).toString();
         this.phone = Objects.requireNonNull(user.get("phone")).toString();

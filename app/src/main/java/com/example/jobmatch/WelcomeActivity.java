@@ -31,16 +31,20 @@ public class WelcomeActivity extends BaseActivity {
         mAuth.addAuthStateListener(firebaseAuthStateListener);
     }
 
-
+    /**
+     * insert views in to variables
+     */
     private void init() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
         bLogin = findViewById(R.id.login);
         bRegister = findViewById(R.id.register);
     }
 
+    /**
+     * set listeners.
+     */
     private void listeners(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
-
         bLogin.setOnClickListener(v -> {
             Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
             startActivity(intent);
@@ -51,7 +55,6 @@ public class WelcomeActivity extends BaseActivity {
             startActivity(intent);
             finish();
         });
-
         mAuth = FirebaseAuth.getInstance();
         firebaseAuthStateListener = firebaseAuth -> {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -61,7 +64,6 @@ public class WelcomeActivity extends BaseActivity {
                 finish();
             }
         };
-
     }
     @Override
     protected void onStop() {

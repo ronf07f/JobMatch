@@ -30,6 +30,9 @@ public class SendMessageActivity extends BaseMenuActivity {
         listeners();
 
     }
+    /**
+     * set listeners.
+     */
     public void listeners(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
         send.setOnClickListener(v -> {
@@ -38,6 +41,9 @@ public class SendMessageActivity extends BaseMenuActivity {
         });
 
     }
+    /**
+     * insert views in to variables.
+     */
     public void init(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
         mEditText = findViewById(R.id.msg);
@@ -49,6 +55,11 @@ public class SendMessageActivity extends BaseMenuActivity {
         Log.i(GlobalVerbs.TAG,"current name : " + currentName +"match name : " +matchName);
         matchPhone = getIntent().getStringExtra(GlobalVerbs.USER_PHONE);
     }
+    /**
+     * set up the text view text and border around the edit text
+     * @param name_to the message receiver
+     * @param name_this the name of the user
+     */
     @SuppressLint("SetTextI18n")
     public void setUpXml(String name_to, String name_this){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"setUpXml");
@@ -65,6 +76,11 @@ public class SendMessageActivity extends BaseMenuActivity {
 
 
     }
+    /**
+     * send sms message
+     * @param phone the phone to send message to
+     * @param msg the message
+     */
     private void sendSMS(String phone,String msg){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"sendSMS");
 

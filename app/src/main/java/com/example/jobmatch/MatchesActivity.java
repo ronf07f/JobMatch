@@ -43,6 +43,9 @@ public class MatchesActivity extends BaseMenuActivity {
 
     }
 
+    /**
+     * find users user name and saves it to a variable.
+     */
     private void setUserName(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"setUserName");
         DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentUserId).get().addOnCompleteListener(task -> {
@@ -57,23 +60,25 @@ public class MatchesActivity extends BaseMenuActivity {
         });
     }
 
+    /**
+     * find match id.
+     */
     private void getMatchesID() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"getMatchesID");
         CollectionReference matchesRef = DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentUserId).collection(GlobalVerbs.MATCH);
         matchesRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-
                 for (QueryDocumentSnapshot doc : task.getResult()) {
-                    Log.i("dog","getMatchesID");
                     addMatchToRecycler(doc.getId());
                 }
             }
         });
     }
-
+    /**
+     * add a match to recycler.
+     */
     private void addMatchToRecycler(String matchId) {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"addMatchToRecycler");
-
         DocumentReference userDB = DB.collection(GlobalVerbs.USERS_COLLECTION).document(matchId);
         userDB.get().addOnCompleteListener(task -> {
             if(task.isSuccessful()){
@@ -92,8 +97,9 @@ public class MatchesActivity extends BaseMenuActivity {
         });
 
     }
-
-
+    /**
+     * set up the recyclerView adapter .
+     */
     private void setAdapter() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"setAdapter");
         MatchesAdapter adapter = new MatchesAdapter(matchesList,getApplicationContext());

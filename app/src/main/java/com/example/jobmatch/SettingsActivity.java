@@ -43,11 +43,8 @@ public class SettingsActivity extends BaseActivity {
 
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore DB = FirebaseFirestore.getInstance();
-
     private DocumentReference userDB;
-
     private String userId, name, phone, profileImageUrl,userType,xp;
-
     private Uri resultUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +56,9 @@ public class SettingsActivity extends BaseActivity {
         getUserInfo();
     }
 
+    /**
+     * insert views in to variables.
+     */
     public void init(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
         nameField =  findViewById(R.id.name);
@@ -82,6 +82,9 @@ public class SettingsActivity extends BaseActivity {
         userDB=DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId);
     }
 
+    /**
+     * set edit text fields.
+     */
     private void getUserInfo() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"getUserInfo");
         userDB.addSnapshotListener((doc, error) -> {
@@ -90,9 +93,7 @@ public class SettingsActivity extends BaseActivity {
             Map<String,Object> userInfo = (Map<String, Object>) Objects.requireNonNull(doc.getData()).get(GlobalVerbs.USERS_USER);
             assert userInfo != null;
             Users tempUser = new Users(userInfo);
-                Log.i("snap","name");
                 name = tempUser.getUserName();
-                Log.i("snap",name);
                 nameField.setText(name);
                 phone = tempUser.getPhone();
                 phoneField.setText(phone);
@@ -100,25 +101,19 @@ public class SettingsActivity extends BaseActivity {
                 xpField.setText(xp);
                 profileImageUrl = tempUser.getProfileImageUrl();
                 Glide.with(getApplication()).load(profileImageUrl).into(profileImage);
-
-
-
         });
     }
 
+    /**
+     * set listeners.
+     */
     public void listeners(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
         confirmButton.setOnClickListener(v -> {
             if(nameField!=null&&phoneField!=null)
                 saveUserInfo();
         });
-
         profileImage.setOnClickListener(v -> {
-            //Intent intent = new Intent(Intent.ACTION_PICK);
-           // intent.setType("image/*");
-          //  mGetContent.launch("image/*")
-            //ImagePicker
-           // ImagePicker.Companion.with(SettingsActivity.this).start()
             chooseProfilePicture();
         });
 
@@ -126,6 +121,9 @@ public class SettingsActivity extends BaseActivity {
 
     }
 
+    /**
+     * show an alert that let's the user to chose between gallery and camera.
+     */
     private void chooseProfilePicture() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"chooseProfilePicture");
         AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
@@ -151,11 +149,11 @@ public class SettingsActivity extends BaseActivity {
             startGallery.launch("image/*");
             alertDialogProfilePic.cancel();
         });
-
-
-
     }
     Uri cam_uri;
+    /**
+     * open the camera app and let the user to take a photo.
+     */
     private void openCamera() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"openCamera");
         ContentValues values = new ContentValues();
@@ -164,14 +162,10 @@ public class SettingsActivity extends BaseActivity {
         cam_uri = SettingsActivity.this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cam_uri);
-
-        //startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE); // OLD WAY
-        startCamera.launch(cameraIntent);                // VERY NEW WAY
+        startCamera.launch(cameraIntent);
 
 
     }
-
-
 
     ActivityResultLauncher<Intent> startCamera = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -179,13 +173,11 @@ public class SettingsActivity extends BaseActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK) {
-                        // There are no request codes
                         resultUri = cam_uri;
                         profileImage.setImageURI(resultUri);
                         if (resultUri != null) {
                             StorageReference filepath = FirebaseStorage.getInstance().getReference().child("profileImages").child(userId);
                             Bitmap bitmap = null;
-
                             try {
                                 bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), resultUri);
                             } catch (IOException e) {
@@ -209,7 +201,6 @@ public class SettingsActivity extends BaseActivity {
                         } else {
                             finish();
                         }
-
                     }
                 }
             });
@@ -249,7 +240,9 @@ public class SettingsActivity extends BaseActivity {
                 }
             }
     });
-
+    /**
+     * saves the user info to the fireStore dataBase
+     */
     private void saveUserInfo() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"saveUserInfo");
         name = nameField.getText().toString();

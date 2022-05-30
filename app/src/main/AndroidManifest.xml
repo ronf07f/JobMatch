@@ -23,9 +23,6 @@
             android:name=".BaseMenuActivity"
             android:exported="false" />
         <activity
-            android:name=".NoInternetAlertActivity"
-            android:exported="false" />
-        <activity
             android:name=".BaseActivity"
             android:exported="false" />
         <activity

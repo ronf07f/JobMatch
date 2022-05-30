@@ -41,6 +41,9 @@ public class RegistrationActivity extends BaseActivity {
         mAuth.addAuthStateListener(firebaseAuthStateListener);
     }
 
+    /**
+     * insert views in to variables.
+     */
     private void init(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
         bRegister = findViewById(R.id.register);
@@ -50,6 +53,9 @@ public class RegistrationActivity extends BaseActivity {
         mRadioGroup = findViewById(R.id.radioGroup);
     }
 
+    /**
+     * set listeners.
+     */
     private void listeners(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
         bRegister.setOnClickListener(v -> {

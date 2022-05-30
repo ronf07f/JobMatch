@@ -86,7 +86,6 @@ public class BaseMenuActivity extends BaseActivity {
         startActivity(intent);
 
     }
-
     /**
      * find the user type and saves it in to a variable
      */

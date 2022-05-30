@@ -20,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JobMatch">
         <activity
+            android:name=".BaseMenuActivity"
+            android:exported="false" />
+        <activity
             android:name=".NoInternetAlertActivity"
             android:exported="false" />
         <activity

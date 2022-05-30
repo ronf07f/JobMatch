@@ -14,20 +14,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="to:asdasda"
-        android:textSize="30sp" />
+        android:textSize="40sp" />
 
     <TextView
         android:id="@+id/msgStarter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="you got a new message form your match *mach name* the massage is :"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="35sp"
         />
 
     <EditText
         android:id="@+id/msg"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
+        android:layout_width="250dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="35sp"
         android:hint="your massage"
         android:gravity="top|left"
         />

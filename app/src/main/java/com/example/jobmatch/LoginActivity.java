@@ -39,13 +39,18 @@ public class LoginActivity extends BaseActivity {
         mAuth.addAuthStateListener(firebaseAuthStateListener);
     }
 
+    /**
+     * insert views in to variables.
+     */
     private void init() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
         bLogin = findViewById(R.id.login);
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
     }
-
+    /**
+     * add listeners
+     */
     private void listeners() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
         bLogin.setOnClickListener(view -> {

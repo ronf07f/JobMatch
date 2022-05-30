@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseMenuActivity {
 
     private CardsAdapter arrayAdapter;
     private FirebaseAuth mAuth;
@@ -60,6 +60,9 @@ public class MainActivity extends BaseActivity {
         SwipeFlingAdapterView flingContainer = findViewById(R.id.frame);
         flingContainer.setAdapter(arrayAdapter);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+            /**
+             * remove the top card when card slides.
+             */
             @Override
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
@@ -68,6 +71,10 @@ public class MainActivity extends BaseActivity {
                 arrayAdapter.notifyDataSetChanged();
             }
 
+            /**
+             * add to the data base that the card was watched and slided to the left(no).
+             * @param dataObject
+             */
             @Override
             public void onLeftCardExit(Object dataObject) {
                 Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onLeftCardExit");
@@ -80,6 +87,11 @@ public class MainActivity extends BaseActivity {
                 Toast.makeText(MainActivity.this, "Left!",Toast.LENGTH_SHORT).show();
             }
 
+            /**
+             * add to the data base that the card was watched and slided to the right(yes).
+             * call a function to check for a possible match
+             * @param dataObject
+             */
             @Override
             public void onRightCardExit(Object dataObject) {
                 Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onRightCardExit");
@@ -93,14 +105,9 @@ public class MainActivity extends BaseActivity {
 
                 Toast.makeText(MainActivity.this, "Right!",Toast.LENGTH_SHORT).show();
             }
-
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                // Ask for more data here;
-
-
                 Log.d("LIST", "notified");
-
             }
 
             @Override
@@ -114,30 +121,10 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onCreateOptionsMenu");
-        getMenuInflater().inflate(R.menu.my_menu,menu);
-        return true;
-    }
-    @SuppressLint("NonConstantResourceId")
-    public boolean onOptionsItemSelected(@NonNull MenuItem item){
-        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onOptionsItemSelected");
-        int id = item.getItemId();
-        switch (id){
-            case R.id.menu_logout:
-                logoutUser();
-                break;
-            case R.id.menu_settings:
-                openSettings();
-                break;
-            case R.id.menu_matches:
-                openMatches();
-                break;
-        }
-        return true;
-    }
-
+    /**
+     * check if there is a match and add to the dataBase if there is a match.
+     * @param userId
+     */
     private void isMatched(String userId) {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"isMatched");
         DocumentReference currentUserYeps = DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.SWIPED_RIGHT).document(userId);
@@ -155,7 +142,9 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-
+    /**
+     * check the type of the user and saves it to a variable.
+     */
     public void checkUserType() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"checkUserType");
         loading.setVisibility(View.VISIBLE);
@@ -167,7 +156,7 @@ public class MainActivity extends BaseActivity {
 
                Log.i("dog","ts");
                @SuppressWarnings("unchecked")
-               Map<String,Object> userInfo = (Map<String, Object>) Objects.requireNonNull(task.getResult().getData()).get("user");
+               Map<String,Object> userInfo = (Map<String, Object>) task.getResult().getData().get("user");
                assert userInfo != null;
                Log.i("dog",userInfo.toString());
                thisUser = new Users(userInfo);
@@ -188,7 +177,9 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    //show cards of opposite type that the user did not watch before
+    /**
+     * check for all the cards of the opposite type users the has not been watched yet.
+     */
     public void findOppositeCards(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"findOppositeCards");
         DB.collection(GlobalVerbs.USERS_COLLECTION).get().addOnCompleteListener(task -> {
@@ -221,32 +212,15 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    /**
+     * show cards on the display.
+     * @param oppositeUser the user it needs to show.
+     * @param id the id of the user.
+     */
     public void showUserOnCard(Users oppositeUser,String id){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"showUserOnCard");
         Cards item = new Cards(oppositeUser,id);
         rowItems.add(item);
         arrayAdapter.notifyDataSetChanged();
-    }
-
-
-    public void logoutUser() {
-        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"logoutUser");
-        mAuth.signOut();
-        Intent intent = new Intent(MainActivity.this,WelcomeActivity.class);
-        startActivity(intent);
-        finish();
-    }
-    public void openSettings() {
-        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"openSettings");
-        Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
-        intent.putExtra(GlobalVerbs.USER_TYPE,userType);
-        startActivity(intent);
-
-    }
-    public void openMatches() {
-        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"openMatches");
-        Intent intent = new Intent(MainActivity.this,MatchesActivity.class);
-        startActivity(intent);
-
     }
 }

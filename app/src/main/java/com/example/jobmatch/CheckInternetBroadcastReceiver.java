@@ -8,13 +8,16 @@ import android.net.ConnectivityManager;
 import android.util.Log;
 
 public class CheckInternetBroadcastReceiver extends BroadcastReceiver {
-
+    /**
+     * show an alert if there is no internet connection and remove the alert when the connection is back
+     *
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
-
         final AlertDialog noInternetAlert = BaseActivity.noInternetAlert;
         if(ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())){
-           // Log.i(GlobalVerbs.TAG,"NO INTERNET");
             boolean noConnectivity =intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY,false);
             if(noConnectivity) {
                 Log.i(GlobalVerbs.TAG, "NO INTERNET");

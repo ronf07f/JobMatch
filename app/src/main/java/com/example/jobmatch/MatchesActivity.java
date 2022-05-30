@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
-public class MatchesActivity extends BaseActivity {
+public class MatchesActivity extends BaseMenuActivity {
 
     private ArrayList<MatchesObj> matchesList;
     private RecyclerView recyclerView;
@@ -47,8 +47,12 @@ public class MatchesActivity extends BaseActivity {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"setUserName");
         DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentUserId).get().addOnCompleteListener(task -> {
            if(task.isSuccessful()){
-               //currentUserName= task.getResult().getString(GlobalVerbs.USER_PHONE);
-               currentUserName= "abc";
+               Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"setUserName" + "task.isSuccessful");
+               @SuppressWarnings("unchecked")
+               Map<String,Object> userInfo = (Map<String, Object>) Objects.requireNonNull(task.getResult().getData()).get("user");
+               assert userInfo != null;
+               Users tempUser = new Users(userInfo);
+               currentUserName = tempUser.getUserName();
            }
         });
     }
@@ -76,13 +80,11 @@ public class MatchesActivity extends BaseActivity {
                 @SuppressWarnings("unchecked")
                 Map<String,Object> userInfo = (Map<String, Object>) Objects.requireNonNull(task.getResult().getData()).get("user");
                 assert userInfo != null;
-                Log.i("dog",userInfo.toString());
                 Users tempUser = new Users(userInfo);
-                Log.i("fff","success");
                 String name = tempUser.getUserName();
                 String profileImage = tempUser.getProfileImageUrl();
                 String phone = tempUser.getPhone();
-                Log.i("fff",name);
+                Log.i(GlobalVerbs.TAG,"current User : " + currentUserName);
                 matchesList.add(new MatchesObj(matchId,name,profileImage,phone,currentUserName));
                 setAdapter();
 

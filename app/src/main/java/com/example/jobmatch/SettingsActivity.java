@@ -64,10 +64,11 @@ public class SettingsActivity extends BaseActivity {
         nameField =  findViewById(R.id.name);
         phoneField = findViewById(R.id.phone);
         backButton = findViewById(R.id.back);
-        xpField = findViewById(R.id.xp);
+        xpField = findViewById(R.id.experience);
         confirmButton = findViewById(R.id.confirm);
         profileImage = findViewById(R.id.profilePic);
         userType = getIntent().getStringExtra(GlobalVerbs.USER_TYPE);
+        Log.i(GlobalVerbs.TAG,"user type : " + userType);
         switch (userType){
             case GlobalVerbs.EMPLOYEE:
                 xpField.setHint("What is your experience ?");

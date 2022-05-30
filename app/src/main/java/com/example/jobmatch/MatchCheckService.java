@@ -29,7 +29,6 @@ public class MatchCheckService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
        // firstRun = true;
         isMatched();
-
         final  String CHANNEL_ID = "Foreground";
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_LOW);
@@ -39,13 +38,13 @@ public class MatchCheckService extends Service {
                     .setContentTitle("we check for new matches")
                     .setSmallIcon(R.mipmap.ic_launcher);
             startForeground(1001,notification.build());
-
-
         }
-
         return super.onStartCommand(intent, flags, startId);
     }
 
+    /**
+     * check if there is a new match and send notification if there is.
+     */
     private void isMatched() {
        DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId).collection(GlobalVerbs.MATCH).addSnapshotListener((snapshots, e) -> {
            Log.i("abc","match ");
@@ -70,19 +69,15 @@ public class MatchCheckService extends Service {
                                        .setContentTitle("You Got A NEW MATCH")
                                        .setSmallIcon(R.mipmap.ic_launcher);
                                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MatchCheckService.this);
-
-// notificationId is a unique int for each notification that you must define
                                notificationManager.notify(1123, notification.build());
-
-
                            }
                        }
                        break;
                    case MODIFIED:
-                       Log.d("abc", "Modified Match");
+                       Log.d(GlobalVerbs.TAG, "Modified Match");
                        break;
                    case REMOVED:
-                       Log.d("abc", "Removed Match");
+                       Log.d(GlobalVerbs.TAG, "Removed Match");
                        break;
                }
            }

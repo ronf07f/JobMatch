@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class SendMessageActivity extends BaseActivity {
+public class SendMessageActivity extends BaseMenuActivity {
 
     private EditText mEditText ;
     private TextView to;
@@ -30,7 +30,7 @@ public class SendMessageActivity extends BaseActivity {
         listeners();
 
     }
-    private void listeners(){
+    public void listeners(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
         send.setOnClickListener(v -> {
             String smsMsg = msgStarter.getText()+" "+mEditText.getText();
@@ -38,18 +38,19 @@ public class SendMessageActivity extends BaseActivity {
         });
 
     }
-    private void init(){
-        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onStop");
+    public void init(){
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
         mEditText = findViewById(R.id.msg);
         to = findViewById(R.id.to);
         send= findViewById(R.id.send);
         msgStarter = findViewById(R.id.msgStarter);
         matchName = getIntent().getStringExtra(GlobalVerbs.OTHER_USER_NAME);
         currentName = getIntent().getStringExtra(GlobalVerbs.USER_NAME);
+        Log.i(GlobalVerbs.TAG,"current name : " + currentName +"match name : " +matchName);
         matchPhone = getIntent().getStringExtra(GlobalVerbs.USER_PHONE);
     }
     @SuppressLint("SetTextI18n")
-    private void setUpXml(String name_to, String name_this){
+    public void setUpXml(String name_to, String name_this){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"setUpXml");
         // Initialize a new GradientDrawable instance
         GradientDrawable gd = new GradientDrawable();
@@ -70,6 +71,7 @@ public class SendMessageActivity extends BaseActivity {
         try {
             SmsManager smsManager =SmsManager.getDefault();
             smsManager.sendTextMessage(phone,null,msg,null,null);
+            //add msg sent alert and move to main
         }catch (Exception e){
             e.printStackTrace();
         }

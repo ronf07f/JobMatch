@@ -54,7 +54,7 @@ public class GetMoreInfoActivity extends BaseActivity {
     }
 
     /**
-     * insert all the views in variables.
+     * insert all the views in to variables.
      */
     public void init(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
@@ -78,7 +78,7 @@ public class GetMoreInfoActivity extends BaseActivity {
     }
 
     /**
-     * insert set the name field with the data it get from the intent extra.
+     * set the name field with the data it get from the intent extra.
      */
     private void getUserInfo() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"getUserInfo");
@@ -128,7 +128,9 @@ public class GetMoreInfoActivity extends BaseActivity {
             startGallery.launch("image/*");
             alertDialogProfilePic.cancel();
         });}
-
+        /**
+         * open the camera app and let the user to take a photo.
+         */
         private void openCamera(){
             Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"openCamera");
             ContentValues values = new ContentValues();
@@ -215,6 +217,9 @@ public class GetMoreInfoActivity extends BaseActivity {
         }
     });
 
+    /**
+     * saves the user info to the fireStore dataBase
+     */
     private void saveUserInfo() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"saveUserInfo");
         name = nameField.getText().toString();

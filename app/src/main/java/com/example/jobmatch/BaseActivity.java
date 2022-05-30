@@ -12,7 +12,6 @@ public class BaseActivity extends AppCompatActivity {
     private final CheckInternetBroadcastReceiver checkInternetBroadcastReceiver = new CheckInternetBroadcastReceiver();
     public static AlertDialog noInternetAlert;
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);

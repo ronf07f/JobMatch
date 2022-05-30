@@ -2,14 +2,23 @@ package com.example.jobmatch;
 public class Cards extends Users{
     private final String userId;
 
+    /**
+     * @param user
+     * @param userId
+     */
     public Cards(Users user, String userId){
         super(user.getUserName(),user.getPhone(), user.getAge(), user.getProfileImageUrl(),user.getUserType(),user.getExperience());
         this.userId=userId;
     }
 //get*variable*ForCard gives back the variable with the correct prefix for the cards
-    public String getExperienceForCard(){
+
+    /**
+     *
+     * @return return the experience with a prefix that depends on the user type
+     */
+    public String getExperienceForCard() {
         String prefix = "";
-        switch (getUserType()){
+        switch (getUserType()) {
             case GlobalVerbs.EMPLOYEE:
                 prefix = "Experience:";
                 break;
@@ -17,14 +26,23 @@ public class Cards extends Users{
                 prefix = "Needed Experience:";
                 break;
         }
-        return prefix+" "+getExperience();
+        return prefix + " " + getExperience();
     }
 
+    /**
+     *
+     * @return return the name with a prefix
+     *
+     */
     public String getUserNameForCard(){
         String prefix = "Name:";
         return prefix+" "+getUserName();
     }
 
+    /**
+     *
+     * @return return the age with a prefix that depends on the user type
+     */
     public String getAgeForCard(){
         String prefix = "";
         switch (getUserType()){
@@ -38,6 +56,10 @@ public class Cards extends Users{
         return prefix+" "+getAge();
     }
 
+    /**
+     *
+     * @return  returns the user id
+     */
     public String getUserId() {
         return userId;
     }

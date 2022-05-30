@@ -17,6 +17,13 @@ public class CardsAdapter extends ArrayAdapter<Cards> {
         super(context,resourceId,item);
     }
 
+    /**
+     *
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     public View getView(int position, View convertView, ViewGroup parent){
         Cards card_item = getItem(position);
         if(convertView == null)

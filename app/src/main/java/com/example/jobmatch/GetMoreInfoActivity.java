@@ -53,6 +53,9 @@ public class GetMoreInfoActivity extends BaseActivity {
         getUserInfo();
     }
 
+    /**
+     * insert all the views in variables.
+     */
     public void init(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
         nameField =  findViewById(R.id.name);
@@ -74,17 +77,20 @@ public class GetMoreInfoActivity extends BaseActivity {
         userDB=DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId);
     }
 
+    /**
+     * insert set the name field with the data it get from the intent extra.
+     */
     private void getUserInfo() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"getUserInfo");
-
-        Log.i("snap","name");
         name = getIntent().getStringExtra(GlobalVerbs.USER_NAME);
-        Log.i("snap",name);
         nameField.setText(name);
 
 
     }
 
+    /**
+     * set listeners.
+     */
     public void listeners(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
         confirmButton.setOnClickListener(v ->  {
@@ -97,6 +103,9 @@ public class GetMoreInfoActivity extends BaseActivity {
             chooseProfilePicture());
     }
 
+    /**
+     * show an alert that let's the user to chose between gallery and camera.
+     */
     private void chooseProfilePicture() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"chooseProfilePicture");
         AlertDialog.Builder builder = new AlertDialog.Builder(GetMoreInfoActivity.this);

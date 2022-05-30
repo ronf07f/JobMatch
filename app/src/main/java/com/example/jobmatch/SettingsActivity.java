@@ -113,9 +113,7 @@ public class SettingsActivity extends BaseActivity {
             if(nameField!=null&&phoneField!=null)
                 saveUserInfo();
         });
-        profileImage.setOnClickListener(v -> {
-            chooseProfilePicture();
-        });
+        profileImage.setOnClickListener(v -> chooseProfilePicture());
 
         backButton.setOnClickListener(v -> finish());
 

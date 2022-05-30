@@ -13,12 +13,6 @@ public class Users {
 
     /**
      * build a user
-     * @param userName
-     * @param phone
-     * @param age
-     * @param profileImageUrl
-     * @param userType
-     * @param experience
      */
     public Users(String userName, String phone, int age, String profileImageUrl, String userType, String experience) {
         this.userName = userName;
@@ -31,7 +25,6 @@ public class Users {
 
     /**
      * build user from map
-     * @param user
      */
     public Users(Map user) {
         this.userName = Objects.requireNonNull(user.get("userName")).toString();

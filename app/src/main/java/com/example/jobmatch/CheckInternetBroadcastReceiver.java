@@ -11,8 +11,6 @@ public class CheckInternetBroadcastReceiver extends BroadcastReceiver {
     /**
      * show an alert if there is no internet connection and remove the alert when the connection is back
      *
-     * @param context
-     * @param intent
      */
     @Override
     public void onReceive(Context context, Intent intent) {

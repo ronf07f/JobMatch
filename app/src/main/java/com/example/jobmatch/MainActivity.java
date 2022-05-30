@@ -1,17 +1,12 @@
 package com.example.jobmatch;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,7 +26,6 @@ import java.util.Objects;
 public class MainActivity extends BaseMenuActivity {
 
     private CardsAdapter arrayAdapter;
-    private FirebaseAuth mAuth;
     private String currentId;
     private String oppositeUserType;
     private  String userType;
@@ -51,7 +45,6 @@ public class MainActivity extends BaseMenuActivity {
         DB = FirebaseFirestore.getInstance();
         setContentView(R.layout.activity_main);
         loading = findViewById(R.id.progressBar);
-        mAuth = FirebaseAuth.getInstance();
         checkUserType();
         rowItems = new ArrayList<>();
         arrayAdapter = new CardsAdapter(this, R.layout.item, rowItems );
@@ -70,7 +63,6 @@ public class MainActivity extends BaseMenuActivity {
             }
             /**
              * add to the data base that the card was watched and slided to the left(no).
-             * @param dataObject
              */
             @Override
             public void onLeftCardExit(Object dataObject) {
@@ -87,7 +79,6 @@ public class MainActivity extends BaseMenuActivity {
             /**
              * add to the data base that the card was watched and slided to the right(yes).
              * call a function to check for a possible match
-             * @param dataObject
              */
             @Override
             public void onRightCardExit(Object dataObject) {
@@ -120,7 +111,6 @@ public class MainActivity extends BaseMenuActivity {
 
     /**
      * check if there is a match and add to the dataBase if there is a match.
-     * @param userId
      */
     private void isMatched(String userId) {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"isMatched");
@@ -153,7 +143,7 @@ public class MainActivity extends BaseMenuActivity {
 
                Log.i("dog","ts");
                @SuppressWarnings("unchecked")
-               Map<String,Object> userInfo = (Map<String, Object>) task.getResult().getData().get("user");
+               Map<String,Object> userInfo = (Map<String, Object>) Objects.requireNonNull(task.getResult().getData()).get("user");
                assert userInfo != null;
                Log.i("dog",userInfo.toString());
                thisUser = new Users(userInfo);

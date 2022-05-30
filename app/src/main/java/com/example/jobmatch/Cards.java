@@ -1,20 +1,16 @@
 package com.example.jobmatch;
 public class Cards {
     private final String userId;
-    private String userName;
-    private final String phone;
+    private final String userName;
     private final int age;
     private final String profileImageUrl;
     private final String userType;
     private final String experience;
 
     /**
-     * @param user
-     * @param userId
      */
     public Cards(Users user, String userId){
         this.userName = user.getUserName();
-        this.phone = user.getPhone();
         this.age = user.getAge();
         this.profileImageUrl = user.getProfileImageUrl();
         this.userType = user.getUserType();
@@ -73,28 +69,8 @@ public class Cards {
         return userId;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
     public String getProfileImageUrl() {
         return profileImageUrl;
-    }
-
-    public String getUserType() {
-        return userType;
     }
 
     public String getExperience() {

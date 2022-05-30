@@ -65,6 +65,7 @@ public class WelcomeActivity extends BaseActivity {
             }
         };
     }
+
     @Override
     protected void onStop() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onStop");

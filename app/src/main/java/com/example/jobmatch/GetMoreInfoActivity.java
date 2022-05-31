@@ -95,8 +95,7 @@ public class GetMoreInfoActivity extends BaseActivity {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
         confirmButton.setOnClickListener(v ->  {
                     saveUserInfo();
-                    Intent intent = new Intent(GetMoreInfoActivity.this,MainActivity.class);
-                    startActivity(intent);
+
         });
         profileImage.setOnClickListener(v ->
             chooseProfilePicture());
@@ -230,5 +229,7 @@ public class GetMoreInfoActivity extends BaseActivity {
         Map<String,Object> userInfo = new HashMap<>();
         userInfo.put("user",user);
         userDB.set(userInfo);
+        Intent intent = new Intent(GetMoreInfoActivity.this,MainActivity.class);
+        startActivity(intent);
     }
 }

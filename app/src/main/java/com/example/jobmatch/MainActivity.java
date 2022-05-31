@@ -179,6 +179,7 @@ public class MainActivity extends BaseMenuActivity {
                         @SuppressWarnings("unchecked")
                         Map<String,Object>data = (Map<String, Object>) document.getData().get(GlobalVerbs.USERS_USER);
                         assert data != null;
+                        Log.i(GlobalVerbs.TAG,"data info " + data.toString());
                         Users tempUser = new Users(data);
                         if (tempUser.getUserType().equals(oppositeUserType)){
                             DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.WATCHED).get().addOnCompleteListener(task1 -> {

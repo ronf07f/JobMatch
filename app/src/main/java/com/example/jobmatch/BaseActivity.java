@@ -13,6 +13,7 @@ public class BaseActivity extends AppCompatActivity {
     public static AlertDialog noInternetAlert;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

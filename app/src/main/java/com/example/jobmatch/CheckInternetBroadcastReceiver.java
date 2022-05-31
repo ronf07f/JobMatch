@@ -14,6 +14,7 @@ public class CheckInternetBroadcastReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.i(GlobalVerbs.TAG,"onReceive");
         final AlertDialog noInternetAlert = BaseActivity.noInternetAlert;
         if(ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())){
             boolean noConnectivity =intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY,false);

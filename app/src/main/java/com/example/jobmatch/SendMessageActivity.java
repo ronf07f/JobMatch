@@ -1,6 +1,7 @@
 package com.example.jobmatch;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SendMessageActivity extends BaseMenuActivity {
 
@@ -38,6 +40,8 @@ public class SendMessageActivity extends BaseMenuActivity {
         send.setOnClickListener(v -> {
             String smsMsg = msgStarter.getText()+" "+mEditText.getText();
             sendSMS(matchPhone,smsMsg);
+            Toast.makeText(SendMessageActivity.this, "SMS SENT",Toast.LENGTH_SHORT).show();
+            finish();
         });
 
     }

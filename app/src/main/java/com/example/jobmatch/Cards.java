@@ -1,4 +1,7 @@
+
+
 package com.example.jobmatch;
+
 public class Cards {
     private final String userId;
     private final String userName;
@@ -6,9 +9,6 @@ public class Cards {
     private final String profileImageUrl;
     private final String userType;
     private final String experience;
-
-    /**
-     */
     public Cards(Users user, String userId){
         this.userName = user.getUserName();
         this.age = user.getAge();
@@ -76,5 +76,7 @@ public class Cards {
     public String getExperience() {
         return experience;
     }
+
 }
+
 

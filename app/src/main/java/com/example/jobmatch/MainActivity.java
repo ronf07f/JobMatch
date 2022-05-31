@@ -73,7 +73,6 @@ public class MainActivity extends BaseMenuActivity {
                 data.put("swiped","swiped");
                 DB.collection(GlobalVerbs.USERS_COLLECTION).document(currentId).collection(GlobalVerbs.WATCHED).document(userId).set(data);
                 DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId).collection(GlobalVerbs.SWIPED_LEFT).document(currentId).set(data);
-                Toast.makeText(MainActivity.this, "Left!",Toast.LENGTH_SHORT).show();
             }
 
             /**
@@ -91,7 +90,6 @@ public class MainActivity extends BaseMenuActivity {
                 DB.collection(GlobalVerbs.USERS_COLLECTION).document(userId).collection(GlobalVerbs.SWIPED_RIGHT).document(currentId).set(data);
                 isMatched(userId);
 
-                Toast.makeText(MainActivity.this, "Right!",Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {

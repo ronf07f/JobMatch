@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class GetMoreInfoActivity extends BaseActivity {
-    private EditText nameField, phoneField,xpField;
+    private EditText nameField, phoneField,xpField,ageField;
     private Button confirmButton;
     private ImageView profileImage;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -46,7 +46,6 @@ public class GetMoreInfoActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"onCreate");
         super.onCreate(savedInstanceState);
-        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "  +getComponentName());
         setContentView(R.layout.activity_get_more_info);
         init();
         listeners();
@@ -60,6 +59,7 @@ public class GetMoreInfoActivity extends BaseActivity {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"init");
         nameField =  findViewById(R.id.name);
         phoneField = findViewById(R.id.phone);
+        ageField = findViewById(R.id.age);
         xpField = findViewById(R.id.xp);
         confirmButton = findViewById(R.id.confirm);
         profileImage = findViewById(R.id.profilePic);
@@ -94,7 +94,6 @@ public class GetMoreInfoActivity extends BaseActivity {
     public void listeners(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
         confirmButton.setOnClickListener(v ->  {
-                if(nameField!=null&&phoneField!=null)
                     saveUserInfo();
                     Intent intent = new Intent(GetMoreInfoActivity.this,MainActivity.class);
                     startActivity(intent);
@@ -225,7 +224,9 @@ public class GetMoreInfoActivity extends BaseActivity {
         name = nameField.getText().toString();
         String phone = phoneField.getText().toString();
         String xp = xpField.getText().toString();
-        Users user = new Users(name, phone,15,profileImageUrl,userType, xp);
+        int age = Integer.parseInt(ageField.getText().toString());
+        Users user = new Users(name, phone,age,profileImageUrl,userType, xp);
+        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"user : " +user.toString());
         Map<String,Object> userInfo = new HashMap<>();
         userInfo.put("user",user);
         userDB.set(userInfo);

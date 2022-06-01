@@ -1,7 +1,6 @@
 package com.example.jobmatch;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;

@@ -1,7 +1,6 @@
 package com.example.jobmatch;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -91,7 +90,6 @@ public class SendMessageActivity extends BaseMenuActivity {
         try {
             SmsManager smsManager =SmsManager.getDefault();
             smsManager.sendTextMessage(phone,null,msg,null,null);
-            //add msg sent alert and move to main
         }catch (Exception e){
             e.printStackTrace();
         }

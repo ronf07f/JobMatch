@@ -1,10 +1,5 @@
 package com.example.jobmatch;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +12,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -24,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -93,10 +97,7 @@ public class GetMoreInfoActivity extends BaseActivity {
      */
     public void listeners(){
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"listeners");
-        confirmButton.setOnClickListener(v ->  {
-                    saveUserInfo();
-
-        });
+        confirmButton.setOnClickListener(v -> saveUserInfo());
         profileImage.setOnClickListener(v ->
             chooseProfilePicture());
     }
@@ -218,18 +219,23 @@ public class GetMoreInfoActivity extends BaseActivity {
     /**
      * saves the user info to the fireStore dataBase
      */
-    private void saveUserInfo() {
+        private void saveUserInfo() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"saveUserInfo");
         name = nameField.getText().toString();
         String phone = phoneField.getText().toString();
         String xp = xpField.getText().toString();
-        int age = Integer.parseInt(ageField.getText().toString());
-        Users user = new Users(name, phone,age,profileImageUrl,userType, xp);
-        Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"user : " +user.toString());
-        Map<String,Object> userInfo = new HashMap<>();
-        userInfo.put("user",user);
-        userDB.set(userInfo);
-        Intent intent = new Intent(GetMoreInfoActivity.this,MainActivity.class);
-        startActivity(intent);
+
+        if(!name.equals("") && !phone.equals("") & !xp.equals("") &&profileImageUrl!=null&&!ageField.getText().toString().equals("")) {
+            int age = Integer.parseInt(ageField.getText().toString());
+            Users user = new Users(name, phone, age, profileImageUrl, userType, xp);
+            Log.i(GlobalVerbs.TAG, getLocalClassName() + " " + "user : " + user);
+            Map<String, Object> userInfo = new HashMap<>();
+            userInfo.put("user", user);
+            userDB.set(userInfo);
+            Intent intent = new Intent(GetMoreInfoActivity.this, MainActivity.class);
+            startActivity(intent);
+        }else {
+            Toast.makeText(GetMoreInfoActivity.this, "Fill all fields!",Toast.LENGTH_SHORT).show();
+        }
     }
 }

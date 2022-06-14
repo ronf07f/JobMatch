@@ -98,7 +98,7 @@ public class MatchesActivity extends BaseMenuActivity {
 
     }
     /**
-     * set up the recyclerView adapter .
+         * set up the recyclerView adapter .
      */
     private void setAdapter() {
         Log.i(GlobalVerbs.TAG,getLocalClassName()+" "+"setAdapter");

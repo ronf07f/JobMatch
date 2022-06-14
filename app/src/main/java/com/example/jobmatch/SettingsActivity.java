@@ -181,7 +181,7 @@ public class SettingsActivity extends BaseActivity {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            ByteArrayOutputStream   baos = new ByteArrayOutputStream();
                             assert bitmap != null;
                             bitmap.compress(Bitmap.CompressFormat.JPEG,20,baos);
                             byte[] pic =  baos.toByteArray();
